@@ -1,0 +1,50 @@
+# GUI界面标题
+title: "&8精灵信息面板"
+# GUI界面大小
+size: 45
+# 是否启用 GUI 内转换相片
+egg: true
+# 转换相片的 GUI 标题
+eggTitle: "&8精灵转换"
+items:
+  fg:
+    type: STAINED_GLASS_PANE
+    data: 15
+    name: "&f"
+    slots:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 36
+      - 37
+      - 38
+      - 39
+      - 40
+      - 41
+      - 42
+      - 43
+      - 44
+  pokemon1:
+    pokemon: 1
+    slot: 10
+  pokemon2:
+    pokemon: 2
+    slot: 13
+  pokemon3:
+    pokemon: 3
+    slot: 16
+  pokemon4:
+    pokemon: 4
+    slot: 28
+  pokemon5:
+    pokemon: 5
+    slot: 31
+  pokemon6:
+    pokemon: 6
+    slot: 34

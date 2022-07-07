@@ -1,0 +1,20 @@
+name: PokemonInfo
+main: com.mc9y.pokemoninfo.Main
+depend:
+  - PokemonAPI
+softdepend:
+  - CombatPower
+  - PokeStar
+authors:
+  - Shawhoi
+version: ${version}
+commands:
+  pi:
+    aliases:
+      - fs
+    description: Command for PokemonInfo
+  pokeegg:
+    description: Command for PokeEggs
+    aliases:
+      - pegg
+      - pokee

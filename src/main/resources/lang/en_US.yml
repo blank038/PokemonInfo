@@ -1,0 +1,26 @@
+reload: "&asuccess reload configuration."
+send: "&asended."
+model_closed: "&cThis model is closed."
+sprite_not_exists: "&cphoto does not exists."
+input_sprite_key: "&cPlease enter photo key(FileName)."
+no_perms: "&cYou don't have permission."
+wrong_slot: "&cPlease enter a number, the number must be 1-6."
+out_number: "&cThe number must be 1-6."
+least_one_left: "&cAt least one pokemon in the inventory!"
+wrong_pokemon: "&cThis slot cannot be converted, please check if there is a pokemon!"
+convert_deny: "&cThis pokemon is not allowed convert."
+deny_rename_pokemon: "&cThe rename pokemon is not allowed to convert!"
+max_ivs: "&cIVs exceeded."
+inv_full: "&aInventory full, item falls under your feet."
+successfully_converted: "&aConvert, item returned to the inventory!"
+
+import_start: "&fStart import, wait.."
+import_complete: "&fData import is complete."
+
+confirm_button: "&aConfirm convert"
+cancel_button: "&cCancel convert"
+
+converting: "&fConvering, wait.."
+convert_complete: "&fConvert complete."
+
+loading_error: "An error occurred while loading %s"

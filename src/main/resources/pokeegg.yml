@@ -1,0 +1,49 @@
+# 提示前缀
+Prefix: "&b宝可梦转换 &f➢ "
+# 是否开启禁用模块
+enable: false
+# 是否允许转换拥有彩色昵称的精灵
+AllowColor: false
+# 个体限制
+max_ivs: 3
+# 是否允许梦特精灵
+
+# 命令帮助
+Help:
+  default:
+    - "&b<&m*-----=======&e &l宝可梦转换&b &m=======-----*&b>"
+    - "&a/pokeegg create <精灵槽位> &f- 将某个槽位精灵转换成相片"
+    - "&f(&b转换后拿着相片右键就能变回原来的精灵&f)"
+  admin:
+    - "&b<&m*-----=======&e &l宝可梦转换&b &m=======-----*&b>"
+    - "&a/pokeegg create <精灵槽位> &f- 将某个槽位精灵转换成相片"
+    - "&f(&b转换后拿着相片右键就能变回原来的精灵&f)"
+    - "&a/pokeegg reload &f- 重载插件配置文件"
+Lore:
+  - "&f"
+  - "&a ▶ &b等级: &f%Level% "
+  - "&a ▶ &b个体信息&f(&e进度: &f%IVS_SUM%&f)"
+  - "&f  ▪ &a血量:&f %IVS_HP% &a攻击:&f %IVS_Attack%"
+  - "&f  ▪ &a速度:&f %IVS_Speed% &a防御:&f %IVS_Defence%"
+  - "&f  ▪ &a特攻:&f %IVS_SpecialAttack% &a特防:&f %IVS_SpecialDefence%"
+  - "&a ▶ &b努力值信息&f(&e进度: &f%EVS_SUM%&f)"
+  - "&f  ▪ &a血量:&f %EVS_HP% &a攻击:&f %EVS_Attack%"
+  - "&f  ▪ &a速度:&f %EVS_Speed% &a防御:&f %EVS_Defence%"
+  - "&f  ▪ &a特攻:&f %EVS_SpecialAttack% &a特防:&f %EVS_SpecialDefence%"
+  - "&a ▶ &b基础信息:"
+  - "&f  ▪ &a闪光: &f%Shiny%"
+  - "&f  ▪ &a特性: &f%Ability%"
+  - "&f  ▪ &a性格: &f%Nature%"
+  - "&f  ▪ &a体型: &f%Growth%"
+  - "&f  ▪ &a性别: &f%Gender%"
+  - "&f  ▪ &a昵称: &f%Nick_Name%"
+  - "&a ▶ &b技能信息:"
+  - "&f  ▪ &a一技能: &f%Move1%"
+  - "&f  ▪ &a二技能: &f%Move2%"
+  - "&f  ▪ &a三技能: &f%Move3%"
+  - "&f  ▪ &a四技能: &f%Move4%"
+  - "&b"
+  - "&e 右键将相片转换成精灵 "
+  - "&d"
+# 转换黑名单, 禁止哪些精灵转换
+BlackList: []
