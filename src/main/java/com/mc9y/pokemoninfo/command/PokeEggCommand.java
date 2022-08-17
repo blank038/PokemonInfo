@@ -130,7 +130,7 @@ public class PokeEggCommand extends BaseCommand
                 return;
             }
             int ivs = (int) Arrays.stream(pokemon.getIVs().getArray()).filter((s) -> s >= 31).count();
-            if (ivs > getConfig().getInt("max_ivs", 7)) {
+            if (ivs > getConfig().getInt("max_ivs", 7) && !player.hasPermission("pokemoninfo.pokeegg.ivs.bypass")) {
                 player.sendMessage(prefix + I18n.inst().getOption("max_ivs"));
                 return;
             }
