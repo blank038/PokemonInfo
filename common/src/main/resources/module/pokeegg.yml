@@ -1,0 +1,12 @@
+# 转换交互冷却, 单位：秒
+cooldown:
+  action: 3
+# 精灵转换黑名单
+black-list:
+  - "Pikachu"
+# 转换设定
+settings:
+  # 是否允许带有彩色字符的精灵转换
+  color: true
+  # IVs 高于多少 v 不允许转换
+  maximum-ivs: 3

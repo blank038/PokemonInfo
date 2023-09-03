@@ -1,0 +1,72 @@
+title: "&8精灵相片转换界面"
+size: 27
+pokemon-slot: 13
+pokemon-item:
+  name: "&6%shiny%&b%pokemon_name%"
+  display-lore:
+    - "&f"
+    - "&a ▶ &b等级: &f%Level% "
+    - "&a ▶ &b个体信息&f(&e进度: &f%IVS_SUM%&f)"
+    - "&f  ▪ &a血量:&f %IVS_HP% &a攻击:&f %IVS_Attack%"
+    - "&f  ▪ &a速度:&f %IVS_Speed% &a防御:&f %IVS_Defence%"
+    - "&f  ▪ &a特攻:&f %IVS_SpecialAttack% &a特防:&f %IVS_SpecialDefence%"
+    - "&a ▶ &b努力值信息&f(&e进度: &f%EVS_SUM%&f)"
+    - "&f  ▪ &a血量:&f %EVS_HP% &a攻击:&f %EVS_Attack%"
+    - "&f  ▪ &a速度:&f %EVS_Speed% &a防御:&f %EVS_Defence%"
+    - "&f  ▪ &a特攻:&f %EVS_SpecialAttack% &a特防:&f %EVS_SpecialDefence%"
+    - "&a ▶ &b基础信息:"
+    - "&f  ▪ &a闪光: &f%Shiny%"
+    - "&f  ▪ &a特性: &f%Ability%"
+    - "&f  ▪ &a性格: &f%Nature%"
+    - "&f  ▪ &a体型: &f%Growth%"
+    - "&f  ▪ &a性别: &f%Gender%"
+    - "&f  ▪ &a昵称: &f%Nick_Name%"
+    - "&a ▶ &b技能信息:"
+    - "&f  ▪ &a一技能: &f%Move1%"
+    - "&f  ▪ &a二技能: &f%Move2%"
+    - "&f  ▪ &a三技能: &f%Move3%"
+    - "&f  ▪ &a四技能: &f%Move4%"
+    - ""
+  sprite-lore:
+    - "&f"
+    - "&a ▶ &b等级: &f%Level% "
+    - "&a ▶ &b个体信息&f(&e进度: &f%IVS_SUM%&f)"
+    - "&f  ▪ &a血量:&f %IVS_HP% &a攻击:&f %IVS_Attack%"
+    - "&f  ▪ &a速度:&f %IVS_Speed% &a防御:&f %IVS_Defence%"
+    - "&f  ▪ &a特攻:&f %IVS_SpecialAttack% &a特防:&f %IVS_SpecialDefence%"
+    - "&a ▶ &b努力值信息&f(&e进度: &f%EVS_SUM%&f)"
+    - "&f  ▪ &a血量:&f %EVS_HP% &a攻击:&f %EVS_Attack%"
+    - "&f  ▪ &a速度:&f %EVS_Speed% &a防御:&f %EVS_Defence%"
+    - "&f  ▪ &a特攻:&f %EVS_SpecialAttack% &a特防:&f %EVS_SpecialDefence%"
+    - "&a ▶ &b基础信息:"
+    - "&f  ▪ &a闪光: &f%Shiny%"
+    - "&f  ▪ &a特性: &f%Ability%"
+    - "&f  ▪ &a性格: &f%Nature%"
+    - "&f  ▪ &a体型: &f%Growth%"
+    - "&f  ▪ &a性别: &f%Gender%"
+    - "&f  ▪ &a昵称: &f%Nick_Name%"
+    - "&a ▶ &b技能信息:"
+    - "&f  ▪ &a一技能: &f%Move1%"
+    - "&f  ▪ &a二技能: &f%Move2%"
+    - "&f  ▪ &a三技能: &f%Move3%"
+    - "&f  ▪ &a四技能: &f%Move4%"
+    - ""
+    - "&a ▶ &b右键转换为精灵"
+    - ""
+items:
+  confirm:
+    type: STAINED_GLASS_PANE
+    amount: 1
+    data: 5
+    action: confirm
+    name: "&a确认转换"
+    slot: 10
+    lore: [ ]
+  deny:
+    type: STAINED_GLASS_PANE
+    amount: 1
+    data: 14
+    action: cancel
+    name: "&c取消转换"
+    slot: 16
+    lore: [ ]

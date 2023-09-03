@@ -1,0 +1,4 @@
+rootProject.name = "PokemonInfo"
+
+include 'common'
+include 'module:module-pixelmon-112', 'module:module-pixelmon-116'

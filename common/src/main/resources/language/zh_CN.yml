@@ -1,0 +1,16 @@
+prefix: "&6精灵信息 &f"
+
+reload: "&a插件配置重载完成."
+
+cooldown: "正在冷却中, 请稍后再试."
+shiny:
+  t: "闪光 "
+  f: ""
+
+wrong-pokemon: "&c该槽位没有宝可梦."
+
+last-pokemon: "队伍只剩下一只精灵, 无法转换."
+black-list: "精灵处于转换黑名单中, 无法转换."
+maximum-ivs: "精灵个体超过可转换阈值, 无法转换."
+color: "精灵昵称含有彩色字符, 无法转换."
+convert: "转换成功."

@@ -1,0 +1,19 @@
+name: PokemonInfo
+main: com.aiyostudio.pokemoninfo.PokemonInfo
+depend:
+  - AyCore
+softdepend:
+  - CombatPower
+  - PokeStar
+version: @version@
+api-version: 1.13
+commands:
+  pi:
+    aliases:
+      - fs
+    description: Command for PokemonInfo.
+  pokeegg:
+    description: Command for PokeEggs.
+    aliases:
+      - pegg
+      - pokee
