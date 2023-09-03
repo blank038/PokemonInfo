@@ -1,47 +1,78 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-    }
-}
-apply plugin: 'net.minecraftforge.gradle.forge'
+import org.apache.tools.ant.filters.ReplaceTokens
 
-version = "1.9.9-SNAPSHOT"
-group = "com.mc9y.pokemoninfo"
-archivesBaseName = "PokemonInfo"
-
-sourceCompatibility = targetCompatibility = '1.8'
-compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '4.0.2'
 }
 
-minecraft {
-    version = "1.12.2-14.23.5.2807"
-    runDir = "run"
-    mappings = "snapshot_20171003"
+project.ext {
+    ver = "1.11.0-BETA"
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(":common")
+    implementation project(":module:module-pixelmon-112")
+    implementation project(":module:module-pixelmon-116")
 }
 
-processResources {
-    inputs.property "version", project.version
+allprojects {
+    apply plugin: 'java'
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'plugin.yml'
+    archivesBaseName = "PokemonInfo"
+    version = ""
 
-        expand 'version':project.version, 'name':project.name
+    sourceCompatibility = targetCompatibility = '1.8'
+    compileJava {
+        sourceCompatibility = targetCompatibility = '1.8'
     }
 
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'plugin.yml'
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url = "https://files.minecraftforge.net/maven" }
+        maven {
+            name = "AyStudio-Repository"
+            url = "https://repo.mc9y.com/snapshots"
+        }
+    }
+
+    dependencies {
+        compileOnly("org.projectlombok:lombok:1.18.24")
+        annotationProcessor("org.projectlombok:lombok:1.18.24")
+    }
+
+    processResources {
+        from(sourceSets.main.resources.srcDirs) {
+            include '**/*.yml'
+            filter ReplaceTokens, tokens: ["version": project.property("ver")]
+            duplicatesStrategy DuplicatesStrategy.INCLUDE
+        }
+    }
+
+    processResources {
+        setFilteringCharset("UTF-8")
+        expand project.properties
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
+subprojects.each { subproject -> evaluationDependsOn(subproject.path) }
+
+tasks.register('allJar', Jar) {
+    dependsOn subprojects.tasks["build"]
+    baseName = 'PokemonInfo-' + project.property("ver")
+    subprojects.each { subproject ->
+        from subproject.configurations.archives.allArtifacts.files.collect {
+            zipTree(it)
+        }
+    }
+}
+
+tasks.jar.enabled = false
+
+artifacts {
+    archives allJar
 }
