@@ -62,7 +62,7 @@ public class PartyView {
                             }
                             if (e.getClick().isRightClick()) {
                                 PartyView.showPokemon(clicker, pokemonSlot, data.getConfigurationSection("show-setting"));
-                            } else if (e.getClick().isLeftClick() && Configuration.getConfig().getBoolean("settings.convert")) {
+                            } else if (e.getClick().isLeftClick() && Configuration.getPokeEggModuleConfig().getBoolean("settings.enable")) {
                                 PokemonConvertView.open(clicker, pokemonSlot);
                             }
                         }

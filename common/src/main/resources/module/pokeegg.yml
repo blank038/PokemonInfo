@@ -6,6 +6,8 @@ black-list:
   - "Pikachu"
 # 转换设定
 settings:
+  # 是否启用转换模块
+  enable: true
   # 是否允许带有彩色字符的精灵转换
   color: true
   # IVs 高于多少 v 不允许转换

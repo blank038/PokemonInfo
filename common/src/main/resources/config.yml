@@ -11,7 +11,3 @@ save-option:
   user: "root"
   # 数据库密码
   password: "root"
-
-settings:
-  # 是否启用转换模块
-  convert: true
