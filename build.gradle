@@ -6,7 +6,7 @@ plugins {
 }
 
 project.ext {
-    ver = "1.11.0-BETA"
+    ver = "1.11.2-BETA"
 }
 
 dependencies {
