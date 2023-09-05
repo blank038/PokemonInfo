@@ -58,6 +58,7 @@ public class PokemonInfo extends AyPlugin {
                 supplier.getAsBoolean();
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
                 DebugControl.debug(Level.SEVERE, e.toString());
+                e.printStackTrace();
             }
         }
     }

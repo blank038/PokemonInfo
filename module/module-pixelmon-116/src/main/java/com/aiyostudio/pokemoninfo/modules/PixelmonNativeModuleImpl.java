@@ -1,4 +1,4 @@
-package modules;
+package com.aiyostudio.pokemoninfo.modules;
 
 import com.aiyostudio.pokemoninfo.cache.PokemonCache;
 import com.aiyostudio.pokemoninfo.debug.DebugControl;

@@ -1,4 +1,4 @@
-package modules.listen;
+package com.aiyostudio.pokemoninfo.modules.listen;
 
 import com.aiyostudio.pokemoninfo.PokemonInfo;
 import com.aiyostudio.pokemoninfo.config.Configuration;

@@ -1,9 +1,9 @@
-package modules;
+package com.aiyostudio.pokemoninfo.modules;
 
 import com.aiyostudio.pokemoninfo.PokemonInfo;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
-import modules.listen.ForgeNativeListener;
+import com.aiyostudio.pokemoninfo.modules.listen.ForgeNativeListener;
 import net.minecraftforge.eventbus.api.EventPriority;
 
 import java.util.function.BooleanSupplier;
