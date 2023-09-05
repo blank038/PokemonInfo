@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 
+import java.util.function.BooleanSupplier;
 import java.util.logging.Level;
 
 /**
@@ -21,8 +22,8 @@ import java.util.logging.Level;
  */
 public class PokemonInfo extends AyPlugin {
     private static final String[] MODULES = {
-            "com.aiyostudio.pokemoninfo.modules.PixelmonLegacyModuleImpl",
-            "com.aiyostudio.pokemoninfo.modules.PixelmonNativeModuleImpl"
+            "com.aiyostudio.pokemoninfo.modules.PixelmonLegacyModuleChecker",
+            "com.aiyostudio.pokemoninfo.modules.PixelmonNativeModuleChecker"
     };
     @Getter
     private static PokemonInfo instance;
@@ -53,8 +54,8 @@ public class PokemonInfo extends AyPlugin {
         for (String moduleClass : PokemonInfo.MODULES) {
             try {
                 Class<?> aClass = Class.forName(moduleClass);
-                IModule<?> module = (IModule<?>) aClass.newInstance();
-                module.run();
+                BooleanSupplier supplier = (BooleanSupplier) aClass.newInstance();
+                supplier.getAsBoolean();
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
                 DebugControl.debug(Level.SEVERE, e.toString());
             }

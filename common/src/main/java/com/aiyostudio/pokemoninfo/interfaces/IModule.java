@@ -9,8 +9,6 @@ import java.util.UUID;
 
 public interface IModule<T> {
 
-    void run();
-
     T fileToPokemon(File file);
 
     T stringToPokemon(String str);

@@ -32,15 +32,6 @@ import java.util.logging.Level;
 public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
 
     @Override
-    public void run() {
-        if (com.pixelmonmod.pixelmon.Pixelmon.getVersion().startsWith("8")) {
-            PokemonInfo.setModule(this);
-            ForgeInject.getInstance().getForgeListener()
-                    .registerListener(PokemonInfo.getInstance(), new ForgeLegacyListener(), EventPriority.NORMAL);
-        }
-    }
-
-    @Override
     public Pokemon fileToPokemon(File file) {
         try (DataInputStream dis = new DataInputStream(Files.newInputStream(file.toPath()))) {
             NBTTagCompound nbt = CompressedStreamTools.read(dis);

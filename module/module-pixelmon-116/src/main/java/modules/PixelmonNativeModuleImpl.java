@@ -1,6 +1,5 @@
 package modules;
 
-import com.aiyostudio.pokemoninfo.PokemonInfo;
 import com.aiyostudio.pokemoninfo.cache.PokemonCache;
 import com.aiyostudio.pokemoninfo.debug.DebugControl;
 import com.aiyostudio.pokemoninfo.interfaces.IModule;
@@ -8,17 +7,13 @@ import com.aiyostudio.pokemoninfo.util.Base64Util;
 import com.aystudio.core.bukkit.AyCore;
 import com.aystudio.core.pixelmon.api.pokemon.PokemonUtil;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonFactory;
 import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
-import modules.listen.ForgeNativeListener;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraftforge.eventbus.api.EventPriority;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.DataInputStream;
@@ -35,15 +30,6 @@ import java.util.logging.Level;
  * @author Blank038
  */
 public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
-
-    @Override
-    public void run() {
-        if (Pixelmon.getVersion().startsWith("9")) {
-            PokemonInfo.setModule(this);
-            Pixelmon.EVENT_BUS.addListener(EventPriority.NORMAL, true,
-                    LegendarySpawnEvent.DoSpawn.class, ForgeNativeListener.LEGENDARY_SPAWN_CONSUMER);
-        }
-    }
 
     @Override
     public Pokemon fileToPokemon(File file) {
