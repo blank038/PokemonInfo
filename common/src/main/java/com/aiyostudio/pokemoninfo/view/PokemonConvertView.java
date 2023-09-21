@@ -98,6 +98,7 @@ public class PokemonConvertView {
                                 } else if (!configuration.getBoolean("settings.color") && PokemonInfo.getModule().getPokemonCustomName(pokemonObj).contains("§")) {
                                     clicker.sendMessage(I18n.getStrAndHeader("color"));
                                 } else {
+                                    PokemonInfo.getModule().retrieveAll(clicker.getUniqueId());
                                     PokemonInfo.getModule().setPartyPokemon(clicker.getUniqueId(), pokemonSlot, null);
                                     String uuid = UUID.randomUUID().toString();
 

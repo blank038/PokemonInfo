@@ -40,4 +40,6 @@ public interface IModule<T> {
     void addPokemon(UUID uuid, T pokemon);
 
     int getPartyPokemonCount(UUID uuid);
+
+    void retrieveAll(UUID uuid);
 }

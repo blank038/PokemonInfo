@@ -161,4 +161,10 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
         PlayerPartyStorage storage = StorageProxy.getParty(uuid);
         return storage.countPokemon();
     }
+
+    @Override
+    public void retrieveAll(UUID uuid) {
+        PlayerPartyStorage storage = StorageProxy.getParty(uuid);
+        storage.retrieveAll("Method retrieveAll is called by PokemonInfo");
+    }
 }

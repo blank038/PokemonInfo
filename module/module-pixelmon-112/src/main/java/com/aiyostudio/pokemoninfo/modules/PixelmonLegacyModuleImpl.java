@@ -1,13 +1,10 @@
 package com.aiyostudio.pokemoninfo.modules;
 
-import com.aiyostudio.pokemoninfo.PokemonInfo;
 import com.aiyostudio.pokemoninfo.cache.PokemonCache;
 import com.aiyostudio.pokemoninfo.debug.DebugControl;
 import com.aiyostudio.pokemoninfo.interfaces.IModule;
-import com.aiyostudio.pokemoninfo.modules.listen.ForgeLegacyListener;
 import com.aiyostudio.pokemoninfo.util.Base64Util;
 import com.aystudio.core.bukkit.AyCore;
-import com.aystudio.core.forge.ForgeInject;
 import com.aystudio.core.pixelmon.api.pokemon.PokemonUtil;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -16,7 +13,6 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
@@ -160,5 +156,11 @@ public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
     public int getPartyPokemonCount(UUID uuid) {
         PlayerPartyStorage storage = Pixelmon.storageManager.getParty(uuid);
         return storage.countPokemon();
+    }
+
+    @Override
+    public void retrieveAll(UUID uuid) {
+        PlayerPartyStorage storage = Pixelmon.storageManager.getParty(uuid);
+        storage.retrieveAll();
     }
 }
