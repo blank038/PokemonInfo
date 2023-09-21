@@ -15,7 +15,7 @@ public class PixelmonNativeModuleChecker implements BooleanSupplier {
 
     @Override
     public boolean getAsBoolean() {
-        if (Pixelmon.getVersion().startsWith("9")) {
+        if (Pixelmon.getVersion().startsWith("9.1")) {
             PokemonInfo.setModule(new PixelmonNativeModuleImpl());
             Pixelmon.EVENT_BUS.addListener(EventPriority.NORMAL, true,
                     LegendarySpawnEvent.DoSpawn.class, ForgeNativeListener.LEGENDARY_SPAWN_CONSUMER);
