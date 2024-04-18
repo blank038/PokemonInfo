@@ -1,6 +1,7 @@
 package com.aiyostudio.pokemoninfo.view;
 
 import com.aiyostudio.pokemoninfo.PokemonInfo;
+import com.aiyostudio.pokemoninfo.api.event.PlayerConvertPokemonEvent;
 import com.aiyostudio.pokemoninfo.cache.PokemonCache;
 import com.aiyostudio.pokemoninfo.config.Configuration;
 import com.aiyostudio.pokemoninfo.dto.AbstractPersistenceDataImpl;
@@ -10,11 +11,13 @@ import com.aystudio.core.bukkit.util.common.CommonUtil;
 import com.aystudio.core.bukkit.util.inventory.GuiModel;
 import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.utils.MinecraftVersion;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,6 +30,69 @@ import java.util.UUID;
  * @author Blank038
  */
 public class PokemonConvertView {
+    private static final TConsumer<FileConfiguration, InventoryClickEvent, Integer> CONSUMER = (data, e, pokemonSlot) -> {
+        e.setCancelled(true);
+        if (e.getClickedInventory() == e.getInventory()) {
+            ItemStack itemStack = e.getCurrentItem();
+            if (itemStack == null || itemStack.getType() == Material.AIR) {
+                return;
+            }
+            NBTItem nbtItem = new NBTItem(e.getCurrentItem());
+            if (nbtItem.hasTag("PokemonConvertAction")) {
+                Player clicker = (Player) e.getWhoClicked();
+                if ("confirm".equals(nbtItem.getString("PokemonConvertAction"))) {
+                    if (PokemonInfo.getModule().getPartyPokemonCount(clicker.getUniqueId()) == 1) {
+                        clicker.sendMessage(I18n.getStrAndHeader("last-pokemon"));
+                        return;
+                    }
+                    if (!PokemonInfo.getModule().isNullOrEgg(clicker.getUniqueId(), pokemonSlot)) {
+                        FileConfiguration configuration = Configuration.getPokeEggModuleConfig();
+                        Object pokemonObj = PokemonInfo.getModule().getPokemon(clicker.getUniqueId(), pokemonSlot);
+                        String species = PokemonInfo.getModule().getSpecies(pokemonObj);
+
+                        if (configuration.getStringList("black-list").contains(species)) {
+                            clicker.sendMessage(I18n.getStrAndHeader("black-list"));
+                            return;
+                        }
+                        if (PokemonInfo.getModule().getIVStoreValue(pokemonObj) > configuration.getInt("settings.maximum-ivs")) {
+                            clicker.sendMessage(I18n.getStrAndHeader("maximum-ivs"));
+                            return;
+                        }
+                        if (!configuration.getBoolean("settings.color") && PokemonInfo.getModule().getPokemonCustomName(pokemonObj).contains("§")) {
+                            clicker.sendMessage(I18n.getStrAndHeader("color"));
+                            return;
+                        }
+                        if (PokemonInfo.getModule().hasFlags(pokemonObj, configuration.getStringList("settings.flags").toArray(new String[0]))
+                                || PokemonInfo.getModule().isCancelled(pokemonObj)) {
+                            clicker.sendMessage(I18n.getStrAndHeader("denied"));
+                            return;
+                        }
+                        PlayerConvertPokemonEvent event = new PlayerConvertPokemonEvent(clicker, pokemonObj);
+                        Bukkit.getPluginManager().callEvent(event);
+                        if (event.isCancelled()) {
+                            if (event.isNotify()) {
+                                clicker.sendMessage(I18n.getStrAndHeader("denied"));
+                            }
+                            return;
+                        }
+                        PokemonInfo.getModule().retrieveAll(clicker.getUniqueId());
+                        PokemonInfo.getModule().setPartyPokemon(clicker.getUniqueId(), pokemonSlot, null);
+                        String uuid = UUID.randomUUID().toString();
+
+                        NBTItem spriteItem = new NBTItem(PokemonConvertView.getPokemonItem(pokemonObj, data, false));
+                        spriteItem.setString("PokemonDataKey", uuid);
+
+                        PokemonCache pokemonCache = new PokemonCache(uuid, pokemonObj);
+                        AbstractPersistenceDataImpl.getInstance().addPokemonCache(pokemonCache);
+
+                        clicker.getInventory().addItem(spriteItem.getItem());
+                        clicker.sendMessage(I18n.getStrAndHeader("convert"));
+                    }
+                }
+                PartyView.open(clicker);
+            }
+        }
+    };
 
     public static void open(Player player, int pokemonSlot) {
         String sourceFile = MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_13_R1) ? "view/convert.yml" : "view/legacy/convert.yml";
@@ -70,62 +136,7 @@ public class PokemonConvertView {
                     }
                 }
             }
-
-            model.execute((e) -> {
-                e.setCancelled(true);
-                if (e.getClickedInventory() == e.getInventory()) {
-                    ItemStack itemStack = e.getCurrentItem();
-                    if (itemStack == null || itemStack.getType() == Material.AIR) {
-                        return;
-                    }
-                    NBTItem nbtItem = new NBTItem(e.getCurrentItem());
-                    if (nbtItem.hasTag("PokemonConvertAction")) {
-                        Player clicker = (Player) e.getWhoClicked();
-                        if (nbtItem.getString("PokemonConvertAction").equals("confirm")) {
-                            if (PokemonInfo.getModule().getPartyPokemonCount(clicker.getUniqueId()) == 1) {
-                                clicker.sendMessage(I18n.getStrAndHeader("last-pokemon"));
-                                return;
-                            }
-                            if (!PokemonInfo.getModule().isNullOrEgg(clicker.getUniqueId(), pokemonSlot)) {
-                                FileConfiguration configuration = Configuration.getPokeEggModuleConfig();
-                                Object pokemonObj = PokemonInfo.getModule().getPokemon(clicker.getUniqueId(), pokemonSlot);
-                                String species = PokemonInfo.getModule().getSpecies(pokemonObj);
-
-                                if (configuration.getStringList("black-list").contains(species)) {
-                                    clicker.sendMessage(I18n.getStrAndHeader("black-list"));
-                                    return;
-                                }
-                                if (PokemonInfo.getModule().getIVStoreValue(pokemonObj) > configuration.getInt("settings.maximum-ivs")) {
-                                    clicker.sendMessage(I18n.getStrAndHeader("maximum-ivs"));
-                                    return;
-                                }
-                                if (!configuration.getBoolean("settings.color") && PokemonInfo.getModule().getPokemonCustomName(pokemonObj).contains("§")) {
-                                    clicker.sendMessage(I18n.getStrAndHeader("color"));
-                                    return;
-                                }
-                                if (PokemonInfo.getModule().hasFlags(pokemonObj, configuration.getStringList("settings.flags").toArray(new String[0]))
-                                        || PokemonInfo.getModule().isCancelled(pokemonObj)) {
-                                    clicker.sendMessage(I18n.getStrAndHeader("denied"));
-                                    return;
-                                }
-                                PokemonInfo.getModule().retrieveAll(clicker.getUniqueId());
-                                PokemonInfo.getModule().setPartyPokemon(clicker.getUniqueId(), pokemonSlot, null);
-                                String uuid = UUID.randomUUID().toString();
-
-                                NBTItem spriteItem = new NBTItem(PokemonConvertView.getPokemonItem(pokemonObj, data, false));
-                                spriteItem.setString("PokemonDataKey", uuid);
-
-                                PokemonCache pokemonCache = new PokemonCache(uuid, pokemonObj);
-                                AbstractPersistenceDataImpl.getInstance().addPokemonCache(pokemonCache);
-
-                                clicker.getInventory().addItem(spriteItem.getItem());
-                                clicker.sendMessage(I18n.getStrAndHeader("convert"));
-                            }
-                        }
-                        PartyView.open(clicker);
-                    }
-                }
-            });
+            model.execute((e) -> CONSUMER.run(data, e, pokemonSlot));
             model.openInventory(player);
         });
     }
@@ -150,5 +161,11 @@ public class PokemonConvertView {
         meta.setLore(lore);
         itemStack.setItemMeta(meta);
         return itemStack;
+    }
+
+    @FunctionalInterface
+    public interface TConsumer<T, U, A> {
+
+        void run(T t, U u , A a);
     }
 }
