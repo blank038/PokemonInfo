@@ -45,8 +45,8 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
     @Override
     public Pokemon stringToPokemon(String str) {
         try {
-            CompoundNBT CompoundNBT = JsonToNBT.parseTag(Base64Util.decode(str));
-            return PokemonFactory.create(CompoundNBT);
+            CompoundNBT compoundNBT = JsonToNBT.parseTag(Base64Util.decode(str));
+            return PokemonFactory.create(compoundNBT);
         } catch (CommandSyntaxException e) {
             DebugControl.log(Level.SEVERE, e.toString());
         }
@@ -55,9 +55,9 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
 
     @Override
     public String pokemonToString(Pokemon pokemon) {
-        CompoundNBT CompoundNBT = new CompoundNBT();
-        pokemon.writeToNBT(CompoundNBT);
-        return CompoundNBT.toString();
+        CompoundNBT compoundNBT = new CompoundNBT();
+        pokemon.writeToNBT(compoundNBT);
+        return compoundNBT.toString();
     }
 
     @Override
@@ -166,5 +166,15 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
     public void retrieveAll(UUID uuid) {
         PlayerPartyStorage storage = StorageProxy.getParty(uuid);
         storage.retrieveAll("Method retrieveAll is called by PokemonInfo");
+    }
+
+    @Override
+    public boolean isCancelled(Pokemon pokemon) {
+        return false;
+    }
+
+    @Override
+    public boolean hasFlags(Pokemon pokemon, String... flags) {
+        return Arrays.stream(flags).anyMatch(pokemon::hasFlag);
     }
 }

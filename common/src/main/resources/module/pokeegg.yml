@@ -12,3 +12,6 @@ settings:
   color: true
   # IVs 高于多少 v 不允许转换
   maximum-ivs: 3
+  # 禁止带有以下标签的精灵转换
+  flags:
+    - "untradeable"

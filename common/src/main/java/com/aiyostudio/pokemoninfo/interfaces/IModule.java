@@ -42,4 +42,8 @@ public interface IModule<T> {
     int getPartyPokemonCount(UUID uuid);
 
     void retrieveAll(UUID uuid);
+
+    boolean isCancelled(T t);
+
+    boolean hasFlags(T t, String... flags);
 }

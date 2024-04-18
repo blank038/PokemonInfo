@@ -93,24 +93,33 @@ public class PokemonConvertView {
 
                                 if (configuration.getStringList("black-list").contains(species)) {
                                     clicker.sendMessage(I18n.getStrAndHeader("black-list"));
-                                } else if (PokemonInfo.getModule().getIVStoreValue(pokemonObj) > configuration.getInt("settings.maximum-ivs")) {
-                                    clicker.sendMessage(I18n.getStrAndHeader("maximum-ivs"));
-                                } else if (!configuration.getBoolean("settings.color") && PokemonInfo.getModule().getPokemonCustomName(pokemonObj).contains("§")) {
-                                    clicker.sendMessage(I18n.getStrAndHeader("color"));
-                                } else {
-                                    PokemonInfo.getModule().retrieveAll(clicker.getUniqueId());
-                                    PokemonInfo.getModule().setPartyPokemon(clicker.getUniqueId(), pokemonSlot, null);
-                                    String uuid = UUID.randomUUID().toString();
-
-                                    NBTItem spriteItem = new NBTItem(PokemonConvertView.getPokemonItem(pokemonObj, data, false));
-                                    spriteItem.setString("PokemonDataKey", uuid);
-
-                                    PokemonCache pokemonCache = new PokemonCache(uuid, pokemonObj);
-                                    AbstractPersistenceDataImpl.getInstance().addPokemonCache(pokemonCache);
-
-                                    clicker.getInventory().addItem(spriteItem.getItem());
-                                    clicker.sendMessage(I18n.getStrAndHeader("convert"));
+                                    return;
                                 }
+                                if (PokemonInfo.getModule().getIVStoreValue(pokemonObj) > configuration.getInt("settings.maximum-ivs")) {
+                                    clicker.sendMessage(I18n.getStrAndHeader("maximum-ivs"));
+                                    return;
+                                }
+                                if (!configuration.getBoolean("settings.color") && PokemonInfo.getModule().getPokemonCustomName(pokemonObj).contains("§")) {
+                                    clicker.sendMessage(I18n.getStrAndHeader("color"));
+                                    return;
+                                }
+                                if (PokemonInfo.getModule().hasFlags(pokemonObj, configuration.getStringList("settings.flags").toArray(new String[0]))
+                                        || PokemonInfo.getModule().isCancelled(pokemonObj)) {
+                                    clicker.sendMessage(I18n.getStrAndHeader("denied"));
+                                    return;
+                                }
+                                PokemonInfo.getModule().retrieveAll(clicker.getUniqueId());
+                                PokemonInfo.getModule().setPartyPokemon(clicker.getUniqueId(), pokemonSlot, null);
+                                String uuid = UUID.randomUUID().toString();
+
+                                NBTItem spriteItem = new NBTItem(PokemonConvertView.getPokemonItem(pokemonObj, data, false));
+                                spriteItem.setString("PokemonDataKey", uuid);
+
+                                PokemonCache pokemonCache = new PokemonCache(uuid, pokemonObj);
+                                AbstractPersistenceDataImpl.getInstance().addPokemonCache(pokemonCache);
+
+                                clicker.getInventory().addItem(spriteItem.getItem());
+                                clicker.sendMessage(I18n.getStrAndHeader("convert"));
                             }
                         }
                         PartyView.open(clicker);

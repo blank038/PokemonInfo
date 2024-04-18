@@ -5,6 +5,7 @@ import com.aiyostudio.pokemoninfo.debug.DebugControl;
 import com.aiyostudio.pokemoninfo.interfaces.IModule;
 import com.aiyostudio.pokemoninfo.util.Base64Util;
 import com.aystudio.core.bukkit.AyCore;
+import com.aystudio.core.pixelmon.PokemonAPI;
 import com.aystudio.core.pixelmon.api.pokemon.PokemonUtil;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -129,7 +130,7 @@ public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
         if (pokemonObj == null) {
             return stats;
         }
-        return AyCore.getPokemonAPI().getStatsHelper().format(pokemonObj, stats);
+        return this.getPokemonApi().getStatsHelper().format(pokemonObj, stats);
     }
 
     @Override
@@ -137,7 +138,7 @@ public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
         if (pokemonObj == null) {
             return null;
         }
-        return AyCore.getPokemonAPI().getSpriteHelper().getSpriteItem(pokemonObj);
+        return this.getPokemonApi().getSpriteHelper().getSpriteItem(pokemonObj);
     }
 
     @Override
@@ -162,5 +163,23 @@ public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
     public void retrieveAll(UUID uuid) {
         PlayerPartyStorage storage = Pixelmon.storageManager.getParty(uuid);
         storage.retrieveAll();
+    }
+
+    @Override
+    public boolean isCancelled(Pokemon pokemon) {
+        return false;
+    }
+
+    @Override
+    public boolean hasFlags(Pokemon pokemon, String... flags) {
+        return Arrays.stream(flags).anyMatch(pokemon::hasSpecFlag);
+    }
+
+    private PokemonAPI getPokemonApi() {
+        try {
+            return (PokemonAPI) AyCore.class.getMethod("getPokemonAPI").invoke(null);
+        } catch (Exception e) {
+            return PokemonAPI.getInstance();
+        }
     }
 }
