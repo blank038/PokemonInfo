@@ -25,8 +25,8 @@ public class MysqlPersistenceDataImpl extends AbstractPersistenceDataImpl {
         String[] array = {
                 "CREATE TABLE IF NOT EXISTS pokemoninfo (uuid VARCHAR(50) NOT NULL, data TEXT, PRIMARY KEY ( uuid ))"
         };
-        storageHandler = new MySqlStorageHandler(PokemonInfo.getInstance(), options.getString("save-option.url"),
-                options.getString("save-option.user"), options.getString("save-option.password"), array);
+        storageHandler = new MySqlStorageHandler(PokemonInfo.getInstance(), options.getString(".url"),
+                options.getString("user"), options.getString("password"), array);
         storageHandler.setCheckConnection(true);
         storageHandler.setReconnectionQueryTable("pokemoninfo");
     }
