@@ -45,7 +45,7 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
     @Override
     public Pokemon stringToPokemon(String str) {
         try {
-            CompoundNBT compoundNBT = JsonToNBT.parseTag(Base64Util.decode(str));
+            CompoundNBT compoundNBT = JsonToNBT.parseTag(str);
             return PokemonFactory.create(compoundNBT);
         } catch (CommandSyntaxException e) {
             DebugControl.log(Level.SEVERE, e.toString());

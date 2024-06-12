@@ -42,7 +42,7 @@ public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
     @Override
     public Pokemon stringToPokemon(String str) {
         try {
-            NBTTagCompound nbtTagCompound = JsonToNBT.getTagFromJson(Base64Util.decode(str));
+            NBTTagCompound nbtTagCompound = JsonToNBT.getTagFromJson(str);
             return Pixelmon.pokemonFactory.create(nbtTagCompound);
         } catch (NBTException e) {
             DebugControl.log(Level.SEVERE, e.toString());
