@@ -1,6 +1,6 @@
 package com.aiyostudio.pokemoninfo.modules;
 
-import com.aiyostudio.pokemoninfo.PokemonInfo;
+import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
 import com.aiyostudio.pokemoninfo.modules.listen.ForgeNativeListener;

@@ -1,6 +1,6 @@
 package com.aiyostudio.pokemoninfo.modules;
 
-import com.aiyostudio.pokemoninfo.PokemonInfo;
+import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.modules.listen.ForgeLegacyListener;
 import com.aystudio.core.forge.ForgeInject;
 import org.bukkit.event.EventPriority;

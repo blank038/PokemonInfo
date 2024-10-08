@@ -1,9 +1,9 @@
 package com.aiyostudio.pokemoninfo.modules.listen;
 
-import com.aiyostudio.pokemoninfo.PokemonInfo;
-import com.aiyostudio.pokemoninfo.config.Configuration;
-import com.aiyostudio.pokemoninfo.message.CustomMessage;
-import com.aiyostudio.pokemoninfo.util.TextUtil;
+import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
+import com.aiyostudio.pokemoninfo.internal.config.Configuration;
+import com.aiyostudio.pokemoninfo.internal.message.CustomMessage;
+import com.aiyostudio.pokemoninfo.internal.util.TextUtil;
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.spawning.archetypes.entities.pokemon.SpawnActionPokemon;

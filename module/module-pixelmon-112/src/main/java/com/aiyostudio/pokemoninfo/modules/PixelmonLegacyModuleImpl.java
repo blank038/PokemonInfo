@@ -1,9 +1,8 @@
 package com.aiyostudio.pokemoninfo.modules;
 
-import com.aiyostudio.pokemoninfo.cache.PokemonCache;
-import com.aiyostudio.pokemoninfo.debug.DebugControl;
-import com.aiyostudio.pokemoninfo.interfaces.IModule;
-import com.aiyostudio.pokemoninfo.util.Base64Util;
+import com.aiyostudio.pokemoninfo.internal.cache.PokemonCache;
+import com.aiyostudio.pokemoninfo.internal.debug.DebugControl;
+import com.aiyostudio.pokemoninfo.internal.interfaces.IModule;
 import com.aystudio.core.bukkit.AyCore;
 import com.aystudio.core.pixelmon.PokemonAPI;
 import com.aystudio.core.pixelmon.api.pokemon.PokemonUtil;

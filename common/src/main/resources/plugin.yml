@@ -1,5 +1,5 @@
 name: PokemonInfo
-main: com.aiyostudio.pokemoninfo.PokemonInfo
+main: com.aiyostudio.pokemoninfo.internal.core.PokemonInfo
 depend:
   - AyCore
 softdepend:
