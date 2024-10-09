@@ -37,6 +37,12 @@ pokemon-item:
       - "&a ▶ &b右键展示该精灵"
       - ""
 
+# 行为类型：CONVERT(转换)、SHOW(展示精灵)
+# 点击类型：LEFT(左键)、RIGHT(右键)、SHIFT_LEFT(SHIFT + 左键)、SHIFT_RIGHT(SHIFT + 右键)
+actions:
+  LEFT: CONVERT
+  RIGHT: SHOW
+
 show-setting:
   cooldown: 10
   message: "&6精灵展示 &f玩家 &a%player% &f展示了一只精灵 &f%pokemon%"

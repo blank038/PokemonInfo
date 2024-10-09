@@ -2,6 +2,7 @@ package com.aiyostudio.pokemoninfo.internal.config;
 
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.i18n.I18n;
+import com.aiyostudio.pokemoninfo.internal.view.PartyView;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -27,8 +28,10 @@ public class Configuration {
             String fileName = i.getName().substring(0, i.getName().indexOf(".yml"));
             CONFIGURATION_MAP.put(fileName.toLowerCase(), YamlConfiguration.loadConfiguration(i));
         }
-
+        // 初始化本地化文件
         new I18n(PokemonInfo.getInstance().getConfig().getString("language", "zh_CN"));
+        // 初始化面板文件
+        PartyView.init();
     }
 
     public static FileConfiguration getModuleConfig(String moduleName) {

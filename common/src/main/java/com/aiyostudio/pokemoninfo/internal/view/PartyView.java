@@ -1,7 +1,7 @@
 package com.aiyostudio.pokemoninfo.internal.view;
 
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
-import com.aiyostudio.pokemoninfo.internal.config.Configuration;
+import com.aiyostudio.pokemoninfo.internal.enums.ActionTypeEnum;
 import com.aiyostudio.pokemoninfo.internal.i18n.I18n;
 import com.aiyostudio.pokemoninfo.internal.manager.ActionCooldownManager;
 import com.aiyostudio.pokemoninfo.internal.util.TextUtil;
@@ -9,6 +9,7 @@ import com.aystudio.core.bukkit.util.common.CommonUtil;
 import com.aystudio.core.bukkit.util.inventory.GuiModel;
 import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.utils.MinecraftVersion;
+import lombok.Setter;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -23,54 +24,62 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * @author Blank038
  */
 public class PartyView {
+    @Setter
+    private static FileConfiguration data;
 
-    public static void open(Player player) {
+    public static void init() {
         String sourceFile = MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_13_R1) ? "view/party.yml" : "view/legacy/party.yml";
         PokemonInfo.getInstance().saveResource(sourceFile, "view/party.yml", false, (file) -> {
-            FileConfiguration data = YamlConfiguration.loadConfiguration(file);
-
-            GuiModel model = new GuiModel(data.getString("title"), data.getInt("size"));
-            model.registerListener(PokemonInfo.getInstance());
-            model.setCloseRemove(true);
-
-            Integer[] array = CommonUtil.formatSlots(data.getString("pokemon-slots"));
-            for (int i = 0; i < array.length && i < 6; i++) {
-                model.setItem(array[i], PartyView.getPokemonItem(player, i, data));
-            }
-
-            PartyView.initializeDisplayItem(model, data);
-
-            model.execute((e) -> {
-                e.setCancelled(true);
-                if (e.getClickedInventory() == e.getInventory()) {
-                    ItemStack itemStack = e.getCurrentItem();
-                    if (itemStack == null || itemStack.getType().equals(Material.AIR)) {
-                        return;
-                    }
-                    NBTItem nbtItem = new NBTItem(itemStack);
-                    if (nbtItem.hasTag("PartyConvertPokemonIndex")) {
-                        Player clicker = (Player) e.getWhoClicked();
-                        int pokemonSlot = nbtItem.getInteger("PartyConvertPokemonIndex");
-                        if (pokemonSlot >= 0 && pokemonSlot < 6) {
-                            if (PokemonInfo.getModule().isNullOrEgg(clicker.getUniqueId(), pokemonSlot)) {
-                                return;
-                            }
-                            if (e.getClick().isRightClick()) {
-                                PartyView.showPokemon(clicker, pokemonSlot, data.getConfigurationSection("show-setting"));
-                            } else if (e.getClick().isLeftClick() && Configuration.getPokeEggModuleConfig().getBoolean("settings.enable")) {
-                                PokemonConvertView.open(clicker, pokemonSlot);
-                            }
-                        }
-                    }
-                }
-            });
-            model.openInventory(player);
+            setData(YamlConfiguration.loadConfiguration(file));
         });
+    }
+
+    public static void open(Player player) {
+        GuiModel model = new GuiModel(data.getString("title"), data.getInt("size"));
+        model.registerListener(PokemonInfo.getInstance());
+        model.setCloseRemove(true);
+        Integer[] array = CommonUtil.formatSlots(data.getString("pokemon-slots"));
+        for (int i = 0; i < array.length && i < 6; i++) {
+            model.setItem(array[i], PartyView.getPokemonItem(player, i, data));
+        }
+        PartyView.initializeDisplayItem(model, data);
+        model.execute((e) -> {
+            e.setCancelled(true);
+            if (e.getClickedInventory() != e.getInventory()) {
+                return;
+            }
+            ItemStack itemStack = e.getCurrentItem();
+            if (itemStack == null || itemStack.getType().equals(Material.AIR)) {
+                return;
+            }
+            NBTItem nbtItem = new NBTItem(itemStack);
+            if (!nbtItem.hasTag("PartyConvertPokemonIndex")) {
+                return;
+            }
+            Player clicker = (Player) e.getWhoClicked();
+            int pokemonSlot = nbtItem.getInteger("PartyConvertPokemonIndex");
+            if (pokemonSlot < 0 || pokemonSlot >= 6) {
+                return;
+            }
+            if (PokemonInfo.getModule().isNullOrEgg(clicker.getUniqueId(), pokemonSlot)) {
+                return;
+            }
+            if (data.contains("actions." + e.getClick().name())) {
+                String action = data.getString("actions." + e.getClick().name(), "NONE");
+                try {
+                    ActionTypeEnum.valueOf(action.toUpperCase()).run(clicker, pokemonSlot);
+                } catch (Exception ex) {
+                    PokemonInfo.getInstance().getLogger().log(Level.WARNING, ex, () -> "行为出现异常: " + action);
+                }
+            }
+        });
+        model.openInventory(player);
     }
 
     private static void initializeDisplayItem(GuiModel model, FileConfiguration data) {
@@ -143,7 +152,6 @@ public class PartyView {
             return;
         }
         ActionCooldownManager.setCooldown("show", player.getName(), options.getInt("cooldown") * 1000L);
-
         Object pokemon = PokemonInfo.getModule().getPokemon(player.getUniqueId(), pokemonSlot);
         String pokemonName = TextUtil.formatHexColor(options.getString("name"))
                 .replace("%pokemon_name%", PokemonInfo.getModule().getPokemonTranslationName(pokemon));
@@ -157,19 +165,19 @@ public class PartyView {
             }
             stats.add(formatStats.get(i) + "\n");
         }
-
         TextComponent textComponent = new TextComponent(split[0]),
                 pokemonDesc = new TextComponent(pokemonName);
-
         pokemonDesc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, stats.stream()
                 .map((s) -> new TextComponent(TextUtil.formatHexColor(s)))
                 .toArray(TextComponent[]::new)));
-
         textComponent.addExtra(pokemonDesc);
         if (split.length > 1) {
             textComponent.addExtra(new TextComponent(split[1]));
         }
-
         Bukkit.getOnlinePlayers().forEach((p) -> p.spigot().sendMessage(textComponent));
+    }
+
+    public static void showPokemon(Player player, int pokemonSlot) {
+        showPokemon(player, pokemonSlot, data.getConfigurationSection("show-setting"));
     }
 }
