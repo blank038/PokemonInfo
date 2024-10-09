@@ -9,6 +9,9 @@ import com.aystudio.core.bukkit.interfaces.CustomExecute;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
@@ -19,9 +22,9 @@ import java.util.logging.Level;
 public class SQLitePersistenceDataImpl extends AbstractPersistenceDataImpl {
     private static String url;
 
-    public SQLitePersistenceDataImpl(ConfigurationSection options) {
-        super();
-        url = options.getString("save-option.url");
+    public SQLitePersistenceDataImpl(ConfigurationSection options, boolean silent) {
+        super(silent);
+        url = options.getString("url");
         String[] array = {
                 "CREATE TABLE IF NOT EXISTS pokemoninfo (uuid VARCHAR(50) NOT NULL, data TEXT, PRIMARY KEY ( uuid ))"
         };
@@ -105,5 +108,27 @@ public class SQLitePersistenceDataImpl extends AbstractPersistenceDataImpl {
             }
         }, "INSERT INTO pokemoninfo (uuid,data) VALUES (?,?)");
         return result.get();
+    }
+
+    @Override
+    public List<PokemonCache> findAll() {
+        List<PokemonCache> result = new ArrayList<>();
+        this.connect((statement) -> {
+            try {
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    String uuid = resultSet.getString(1);
+                    String data = resultSet.getString(2);
+                    if (uuid != null && data != null) {
+                        String decodeStr = Base64Util.decode(data);
+                        PokemonCache pokemonCache = new PokemonCache(uuid, PokemonInfo.getModule().stringToPokemon(decodeStr));
+                        result.add(pokemonCache);
+                    }
+                }
+            } catch (SQLException e) {
+                DebugControl.log(Level.SEVERE, e.toString());
+            }
+        }, "SELECT uuid,data FROM pokemoninfo;");
+        return result;
     }
 }

@@ -6,8 +6,17 @@ debug: false
 save-option:
   type: YAML
   # MySQL的URL，例如 jdbc:mysql://127.0.0.1/minecraft 格式：jdbc:mysql://MySQL地址/数据库名
-  url: jdbc:mysql://localhost/minecraft
+  url: jdbc:mysql://localhost/minecraft?useUnicode=true&characterEncoding=utf-8
   # 数据库用户名
   user: "root"
   # 数据库密码
   password: "root"
+# 导入数据时使用的目标信息
+convert-option:
+  yaml: {}
+  mysql:
+    url: jdbc:mysql://localhost/minecraft?useUnicode=true&characterEncoding=utf-8
+    user: "root"
+    password: "root"
+  sqlite:
+    url: jdbc:sqlite:./plugins/PokemonInfo/database.db

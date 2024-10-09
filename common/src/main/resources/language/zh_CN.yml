@@ -8,6 +8,8 @@ shiny:
   f: ""
 
 pls-enter-slot: "请输入要转换的槽位(1-6)."
+pls-enter-source-storage: "请输入来源数据源."
+pls-enter-target-storage: "请输入目标数据源."
 
 wrong-pokemon: "&c该槽位没有宝可梦."
 wrong-number: "请输入一个有效的数字."
@@ -18,3 +20,9 @@ maximum-ivs: "精灵个体超过可转换阈值, 无法转换."
 color: "精灵昵称含有彩色字符, 无法转换."
 denied: "该精灵无法转化."
 convert: "转换成功."
+same-source: "数据源不能相同."
+convert-warn: "你必须清楚你正在做什么！！如果你确定无误请在 10 秒内再次执行一次命令！"
+convert-data-failed: "数据源导入失败."
+converting: "有导入任务进行中, 请勿重复执行！"
+convert-start: "开始导入数据, 成功后会在后台输出日志！"
+convert-complete: "数据导入完成！"

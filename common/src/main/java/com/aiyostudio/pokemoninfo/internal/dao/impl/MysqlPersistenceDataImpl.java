@@ -10,6 +10,9 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
@@ -20,8 +23,8 @@ import java.util.logging.Level;
 public class MysqlPersistenceDataImpl extends AbstractPersistenceDataImpl {
     private static MySqlStorageHandler storageHandler;
 
-    public MysqlPersistenceDataImpl(ConfigurationSection options) {
-        super();
+    public MysqlPersistenceDataImpl(ConfigurationSection options, boolean silent) {
+        super(silent);
         String[] array = {
                 "CREATE TABLE IF NOT EXISTS pokemoninfo (uuid VARCHAR(50) NOT NULL, data TEXT, PRIMARY KEY ( uuid ))"
         };
@@ -90,5 +93,27 @@ public class MysqlPersistenceDataImpl extends AbstractPersistenceDataImpl {
             }
         }, "INSERT INTO pokemoninfo (uuid,data) VALUES (?,?)");
         return result.get();
+    }
+
+    @Override
+    public List<PokemonCache> findAll() {
+        List<PokemonCache> result = new ArrayList<>();
+        storageHandler.connect((statement) -> {
+            try {
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    String uuid = resultSet.getString(1);
+                    String data = resultSet.getString(2);
+                    if (uuid != null && data != null) {
+                        String decodeStr = Base64Util.decode(data);
+                        PokemonCache pokemonCache = new PokemonCache(uuid, PokemonInfo.getModule().stringToPokemon(decodeStr));
+                        result.add(pokemonCache);
+                    }
+                }
+            } catch (SQLException e) {
+                DebugControl.log(Level.SEVERE, e.toString());
+            }
+        }, "SELECT uuid,data FROM pokemoninfo;");
+        return result;
     }
 }

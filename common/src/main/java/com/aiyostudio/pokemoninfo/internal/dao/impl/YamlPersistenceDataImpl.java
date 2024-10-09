@@ -3,16 +3,20 @@ package com.aiyostudio.pokemoninfo.internal.dao.impl;
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.cache.PokemonCache;
 import com.aiyostudio.pokemoninfo.internal.dao.AbstractPersistenceDataImpl;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Blank038
  */
 public class YamlPersistenceDataImpl extends AbstractPersistenceDataImpl {
 
-    public YamlPersistenceDataImpl() {
-        super();
+    public YamlPersistenceDataImpl(ConfigurationSection options, boolean silent) {
+        super(options, silent);
         this.checkAndGetFolder();
     }
 
@@ -49,5 +53,15 @@ public class YamlPersistenceDataImpl extends AbstractPersistenceDataImpl {
             return false;
         }
         return PokemonInfo.getModule().writePokemonToFile(pokemonCache, file);
+    }
+
+    @Override
+    public List<PokemonCache> findAll() {
+        return Arrays.stream(this.checkAndGetFolder().listFiles())
+                .map((file) -> {
+                    String pokemonId = file.getName().substring(0, file.getName().length() - 4);
+                    return new PokemonCache(pokemonId, PokemonInfo.getModule().fileToPokemon(file));
+                })
+                .collect(Collectors.toList());
     }
 }

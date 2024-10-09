@@ -13,22 +13,28 @@ public abstract class AbstractPersistenceDataImpl implements IPersistenceData {
     @Getter
     private static IPersistenceData instance;
 
-    public AbstractPersistenceDataImpl() {
-        instance = this;
+    public AbstractPersistenceDataImpl(ConfigurationSection options, boolean silent) {
+        this(silent);
+    }
+
+    public AbstractPersistenceDataImpl(boolean silent) {
+        if (!silent) {
+            instance = this;
+        }
     }
 
     public static IPersistenceData of(ConfigurationSection options) {
         if (options == null) {
-            return new YamlPersistenceDataImpl();
+            return new YamlPersistenceDataImpl(null, false);
         }
         switch (options.getString("type", "").toLowerCase()) {
             case "mysql":
-                return new MysqlPersistenceDataImpl(options);
+                return new MysqlPersistenceDataImpl(options, false);
             case "sqlite":
-                return new SQLitePersistenceDataImpl(options);
+                return new SQLitePersistenceDataImpl(options, false);
             case "yaml":
             default:
-                return new YamlPersistenceDataImpl();
+                return new YamlPersistenceDataImpl(null, false);
         }
     }
 }
