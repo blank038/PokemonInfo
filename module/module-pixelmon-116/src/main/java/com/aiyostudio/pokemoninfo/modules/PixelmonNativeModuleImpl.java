@@ -3,11 +3,13 @@ package com.aiyostudio.pokemoninfo.modules;
 import com.aiyostudio.pokemoninfo.internal.cache.PokemonCache;
 import com.aiyostudio.pokemoninfo.internal.debug.DebugControl;
 import com.aiyostudio.pokemoninfo.internal.interfaces.IModule;
+import com.aiyostudio.pokemoninfo.internal.view.PartyView;
 import com.aystudio.core.bukkit.AyCore;
 import com.aystudio.core.pixelmon.api.pokemon.PokemonUtil;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonFactory;
+import com.pixelmonmod.pixelmon.api.pokemon.stats.BattleStatsType;
 import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import net.minecraft.nbt.CompoundNBT;
@@ -20,9 +22,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -133,6 +133,39 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
             return stats;
         }
         return AyCore.getPokemonAPI().getStatsHelper().format(pokemonObj, stats);
+    }
+
+    @Override
+    public List<String> internalFormat(Pokemon pokemon, List<String> stats) {
+        if (pokemon == null) {
+            return stats;
+        }
+        String state = PartyView.getData().getString("custom-format.ivs.hyper-trained");
+        if (state == null) {
+            return stats;
+        }
+        Map<String, BattleStatsType> battleStatsTypeMap = new HashMap<>();
+        battleStatsTypeMap.put("HP", BattleStatsType.HP);
+        battleStatsTypeMap.put("Speed", BattleStatsType.SPEED);
+        battleStatsTypeMap.put("Attack", BattleStatsType.ATTACK);
+        battleStatsTypeMap.put("Defense", BattleStatsType.DEFENSE);
+        battleStatsTypeMap.put("SpecialAttack", BattleStatsType.SPECIAL_ATTACK);
+        battleStatsTypeMap.put("SpecialDefense", BattleStatsType.SPECIAL_DEFENSE);
+        List<String> result = new ArrayList<>(stats);
+        result.replaceAll((line) -> {
+            String replacement = line;
+            for (Map.Entry<String, BattleStatsType> entry : battleStatsTypeMap.entrySet()) {
+                String target = "%IVS_" + entry.getKey() + "%";
+                if (!line.contains(target)) {
+                    continue;
+                }
+                if (pokemon.getIVs().isHyperTrained(entry.getValue())) {
+                    replacement = replacement.replace(target, state.replace("%value%", target));
+                }
+            }
+            return replacement;
+        });
+        return this.formatStats(pokemon, result);
     }
 
     @Override

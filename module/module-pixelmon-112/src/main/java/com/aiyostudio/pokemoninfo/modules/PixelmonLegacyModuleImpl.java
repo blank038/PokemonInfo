@@ -3,11 +3,13 @@ package com.aiyostudio.pokemoninfo.modules;
 import com.aiyostudio.pokemoninfo.internal.cache.PokemonCache;
 import com.aiyostudio.pokemoninfo.internal.debug.DebugControl;
 import com.aiyostudio.pokemoninfo.internal.interfaces.IModule;
+import com.aiyostudio.pokemoninfo.internal.view.PartyView;
 import com.aystudio.core.bukkit.AyCore;
 import com.aystudio.core.pixelmon.PokemonAPI;
 import com.aystudio.core.pixelmon.api.pokemon.PokemonUtil;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.JsonToNBT;
@@ -17,9 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -130,6 +130,32 @@ public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
             return stats;
         }
         return this.getPokemonApi().getStatsHelper().format(pokemonObj, stats);
+    }
+
+    @Override
+    public List<String> internalFormat(Pokemon pokemon, List<String> stats) {
+        if (pokemon == null) {
+            return stats;
+        }
+        String state = PartyView.getData().getString("custom-format.ivs.hyper-trained");
+        if (state == null) {
+            return stats;
+        }
+        List<String> result = new ArrayList<>(stats);
+        result.replaceAll((line) -> {
+            String replacement = line;
+            for (StatsType statsType : StatsType.getStatValues()) {
+                String target = "%IVS_" + statsType.name() + "%";
+                if (!line.contains(target)) {
+                    continue;
+                }
+                if (pokemon.getIVs().isHyperTrained(statsType)) {
+                    replacement = replacement.replace(target, state.replace("%value%", target));
+                }
+            }
+            return replacement;
+        });
+        return this.formatStats(pokemon, result);
     }
 
     @Override

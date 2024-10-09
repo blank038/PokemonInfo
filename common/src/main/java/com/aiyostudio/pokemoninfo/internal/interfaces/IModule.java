@@ -33,6 +33,8 @@ public interface IModule<T> {
 
     List<String> formatStats(T pokemonObj, List<String> stats);
 
+    List<String> internalFormat(T pokemon, List<String> stats);
+
     ItemStack getPokemonSpriteItem(T pokemonObj);
 
     void setPartyPokemon(UUID uuid, int pokemonSlot, T pokemon);

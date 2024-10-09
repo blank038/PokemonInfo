@@ -134,7 +134,7 @@ public class PartyView {
         meta.setDisplayName(TextUtil.formatHexColor(section.getString("name"))
                 .replace("%pokemon_name%", PokemonInfo.getModule().getPokemonTranslationName(pokemon))
                 .replace("%shiny%", I18n.getOption("shiny." + (PokemonInfo.getModule().isShiny(pokemon) ? "t" : "f"))));
-        List<String> lore = PokemonInfo.getModule().formatStats(pokemon, new ArrayList<>(section.getStringList("lore")));
+        List<String> lore = PokemonInfo.getModule().internalFormat(pokemon, new ArrayList<>(section.getStringList("lore")));
         lore.replaceAll(TextUtil::formatHexColor);
         meta.setLore(lore);
         itemStack.setItemMeta(meta);
