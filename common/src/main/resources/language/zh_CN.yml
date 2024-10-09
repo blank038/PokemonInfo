@@ -7,7 +7,10 @@ shiny:
   t: "闪光 "
   f: ""
 
+pls-enter-slot: "请输入要转换的槽位(1-6)."
+
 wrong-pokemon: "&c该槽位没有宝可梦."
+wrong-number: "请输入一个有效的数字."
 
 last-pokemon: "队伍只剩下一只精灵, 无法转换."
 black-list: "精灵处于转换黑名单中, 无法转换."

@@ -11,6 +11,7 @@ import com.aystudio.core.bukkit.util.common.CommonUtil;
 import com.aystudio.core.bukkit.util.inventory.GuiModel;
 import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.utils.MinecraftVersion;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -79,7 +80,7 @@ public class PokemonConvertView {
                         PokemonInfo.getModule().setPartyPokemon(clicker.getUniqueId(), pokemonSlot, null);
                         String uuid = UUID.randomUUID().toString();
 
-                        NBTItem spriteItem = new NBTItem(PokemonConvertView.getPokemonItem(pokemonObj, data, false));
+                        NBTItem spriteItem = new NBTItem(PokemonConvertView.getPokemonItem(pokemonObj , false));
                         spriteItem.setString("PokemonDataKey", uuid);
 
                         PokemonCache pokemonCache = new PokemonCache(uuid, pokemonObj);
@@ -93,55 +94,60 @@ public class PokemonConvertView {
             }
         }
     };
+    @Setter
+    private static FileConfiguration data;
 
-    public static void open(Player player, int pokemonSlot) {
+
+    public static void init() {
         String sourceFile = MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_13_R1) ? "view/convert.yml" : "view/legacy/convert.yml";
         PokemonInfo.getInstance().saveResource(sourceFile, "view/convert.yml", false, (file) -> {
-            FileConfiguration data = YamlConfiguration.loadConfiguration(file);
-
-            GuiModel model = new GuiModel(data.getString("title"), data.getInt("size"));
-            model.registerListener(PokemonInfo.getInstance());
-            model.setCloseRemove(true);
-
-            Object displayPokemon = PokemonInfo.getModule().getPokemon(player.getUniqueId(), pokemonSlot);
-            model.setItem(data.getInt("pokemon-slot"), PokemonConvertView.getPokemonItem(displayPokemon, data, true));
-
-            if (data.getKeys(false).contains("items")) {
-                for (String key : data.getConfigurationSection("items").getKeys(false)) {
-                    ConfigurationSection section = data.getConfigurationSection("items." + key);
-                    ItemStack itemStack = new ItemStack(Material.valueOf(section.getString("type")), section.getInt("amount"));
-                    ItemMeta meta = itemStack.getItemMeta();
-                    if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_13_R1)) {
-                        ((Damageable) meta).setDamage((short) section.getInt("data"));
-                        if (section.contains("custom-data")) {
-                            meta.setCustomModelData(section.getInt("custom-data"));
-                        }
-                    } else {
-                        itemStack.setDurability((short) section.getInt("data"));
-                    }
-                    meta.setDisplayName(TextUtil.formatHexColor(section.getString("name")));
-                    List<String> lore = section.getStringList("lore");
-                    lore.replaceAll(TextUtil::formatHexColor);
-                    meta.setLore(lore);
-                    itemStack.setItemMeta(meta);
-
-                    if (section.contains("action")) {
-                        NBTItem nbtItem = new NBTItem(itemStack);
-                        nbtItem.setString("PokemonConvertAction", section.getString("action"));
-                        itemStack = nbtItem.getItem();
-                    }
-
-                    for (int i : CommonUtil.formatSlots(section.getString("slot"))) {
-                        model.setItem(i, itemStack);
-                    }
-                }
-            }
-            model.execute((e) -> CONSUMER.run(data, e, pokemonSlot));
-            model.openInventory(player);
+            data = YamlConfiguration.loadConfiguration(file);
         });
     }
 
-    private static ItemStack getPokemonItem(Object pokemon, FileConfiguration data, boolean display) {
+    public static void open(Player player, int pokemonSlot) {
+        GuiModel model = new GuiModel(data.getString("title"), data.getInt("size"));
+        model.registerListener(PokemonInfo.getInstance());
+        model.setCloseRemove(true);
+
+        Object displayPokemon = PokemonInfo.getModule().getPokemon(player.getUniqueId(), pokemonSlot);
+        model.setItem(data.getInt("pokemon-slot"), PokemonConvertView.getPokemonItem(displayPokemon, true));
+
+        if (data.getKeys(false).contains("items")) {
+            for (String key : data.getConfigurationSection("items").getKeys(false)) {
+                ConfigurationSection section = data.getConfigurationSection("items." + key);
+                ItemStack itemStack = new ItemStack(Material.valueOf(section.getString("type")), section.getInt("amount"));
+                ItemMeta meta = itemStack.getItemMeta();
+                if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_13_R1)) {
+                    ((Damageable) meta).setDamage((short) section.getInt("data"));
+                    if (section.contains("custom-data")) {
+                        meta.setCustomModelData(section.getInt("custom-data"));
+                    }
+                } else {
+                    itemStack.setDurability((short) section.getInt("data"));
+                }
+                meta.setDisplayName(TextUtil.formatHexColor(section.getString("name")));
+                List<String> lore = section.getStringList("lore");
+                lore.replaceAll(TextUtil::formatHexColor);
+                meta.setLore(lore);
+                itemStack.setItemMeta(meta);
+
+                if (section.contains("action")) {
+                    NBTItem nbtItem = new NBTItem(itemStack);
+                    nbtItem.setString("PokemonConvertAction", section.getString("action"));
+                    itemStack = nbtItem.getItem();
+                }
+
+                for (int i : CommonUtil.formatSlots(section.getString("slot"))) {
+                    model.setItem(i, itemStack);
+                }
+            }
+        }
+        model.execute((e) -> CONSUMER.run(data, e, pokemonSlot));
+        model.openInventory(player);
+    }
+
+    public static ItemStack getPokemonItem(Object pokemon, boolean display) {
         ConfigurationSection section = data.getConfigurationSection("pokemon-item");
         ItemStack itemStack = PokemonInfo.getModule().getPokemonSpriteItem(pokemon);
         ItemMeta meta = itemStack.getItemMeta();

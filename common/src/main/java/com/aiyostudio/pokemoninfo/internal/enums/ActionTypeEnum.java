@@ -16,7 +16,9 @@ public enum ActionTypeEnum {
             PokemonConvertView.open(player, slot);
         }
     }),
-    SHOW(PartyView::showPokemon),
+    SHOW((player, slot) -> {
+        PartyView.showPokemon(player, slot, PartyView.getData().getConfigurationSection("show-setting"));
+    }),
     NONE((player, slot) -> {});
 
     private final BiConsumer<Player, Integer> action;

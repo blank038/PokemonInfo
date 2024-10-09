@@ -3,6 +3,7 @@ package com.aiyostudio.pokemoninfo.internal.config;
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.i18n.I18n;
 import com.aiyostudio.pokemoninfo.internal.view.PartyView;
+import com.aiyostudio.pokemoninfo.internal.view.PokemonConvertView;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -32,6 +33,7 @@ public class Configuration {
         new I18n(PokemonInfo.getInstance().getConfig().getString("language", "zh_CN"));
         // 初始化面板文件
         PartyView.init();
+        PokemonConvertView.init();
     }
 
     public static FileConfiguration getModuleConfig(String moduleName) {

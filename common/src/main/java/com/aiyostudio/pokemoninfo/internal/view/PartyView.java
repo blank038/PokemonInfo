@@ -9,6 +9,7 @@ import com.aystudio.core.bukkit.util.common.CommonUtil;
 import com.aystudio.core.bukkit.util.inventory.GuiModel;
 import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.utils.MinecraftVersion;
+import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -31,6 +32,7 @@ import java.util.logging.Level;
  */
 public class PartyView {
     @Setter
+    @Getter
     private static FileConfiguration data;
 
     public static void init() {
@@ -142,7 +144,7 @@ public class PartyView {
         return nbtItem.getItem();
     }
 
-    private static void showPokemon(Player player, int pokemonSlot, ConfigurationSection options) {
+    public static void showPokemon(Player player, int pokemonSlot, ConfigurationSection options) {
         if (ActionCooldownManager.isCooldown("show", player.getName())) {
             player.sendMessage(I18n.getStrAndHeader("cooldown"));
             return;
@@ -175,9 +177,5 @@ public class PartyView {
             textComponent.addExtra(new TextComponent(split[1]));
         }
         Bukkit.getOnlinePlayers().forEach((p) -> p.spigot().sendMessage(textComponent));
-    }
-
-    public static void showPokemon(Player player, int pokemonSlot) {
-        showPokemon(player, pokemonSlot, data.getConfigurationSection("show-setting"));
     }
 }
