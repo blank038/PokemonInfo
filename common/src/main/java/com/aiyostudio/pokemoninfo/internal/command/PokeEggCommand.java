@@ -34,7 +34,7 @@ public class PokeEggCommand implements CommandExecutor {
             if (slot < 1 || slot > 6) {
                 return;
             }
-            if (PokemonInfoApi.convertByDefault((Player) sender, slot)) {
+            if (PokemonInfoApi.convertByDefault((Player) sender, --slot)) {
                 sender.sendMessage(I18n.getStrAndHeader("convert"));
             } else {
                 sender.sendMessage(I18n.getStrAndHeader("denied"));
