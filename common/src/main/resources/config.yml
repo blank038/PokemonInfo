@@ -20,3 +20,5 @@ convert-option:
     password: "root"
   sqlite:
     url: jdbc:sqlite:./plugins/PokemonInfo/database.db
+# 相片 NBT 键名设定
+data-key: "PokemonDataKey"

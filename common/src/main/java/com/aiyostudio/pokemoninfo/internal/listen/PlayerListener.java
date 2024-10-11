@@ -6,6 +6,7 @@ import com.aiyostudio.pokemoninfo.internal.config.Configuration;
 import com.aiyostudio.pokemoninfo.internal.dao.AbstractPersistenceDataImpl;
 import com.aiyostudio.pokemoninfo.internal.i18n.I18n;
 import com.aiyostudio.pokemoninfo.internal.manager.ActionCooldownManager;
+import com.aiyostudio.pokemoninfo.internal.manager.CacheManager;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,11 +33,11 @@ public class PlayerListener implements Listener {
                 return;
             }
             NBTItem nbtItem = new NBTItem(itemStack);
-            if (nbtItem.hasTag("PokemonDataKey")) {
+            if (nbtItem.hasTag(CacheManager.getDataKey())) {
                 event.setCancelled(true);
                 ActionCooldownManager.setCooldown("action", player.getName(),
                         Configuration.getPokeEggModuleConfig().getInt("cooldown.action") * 1000L);
-                String uuid = nbtItem.getString("PokemonDataKey");
+                String uuid = nbtItem.getString(CacheManager.getDataKey());
                 PokemonCache pokemonCache = AbstractPersistenceDataImpl.getInstance().getPokemonCache(uuid);
                 if (AbstractPersistenceDataImpl.getInstance().removePokemonCache(uuid)) {
                     player.getInventory().setItemInMainHand(null);

@@ -1,6 +1,8 @@
 package com.aiyostudio.pokemoninfo.internal.manager;
 
 import com.aiyostudio.pokemoninfo.internal.cache.PlayerData;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,6 +15,9 @@ import java.util.UUID;
  */
 public class CacheManager {
     private static final Map<String, PlayerData> PLAYER_DATA_MAP = new HashMap<>();
+    @Getter
+    @Setter
+    private static String dataKey;
 
     public static void push(CommandSender sender) {
         if (sender.hasPermission("pokemoninfo.admin")) {

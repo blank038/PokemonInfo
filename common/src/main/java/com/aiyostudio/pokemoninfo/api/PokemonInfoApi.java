@@ -6,6 +6,7 @@ import com.aiyostudio.pokemoninfo.internal.config.Configuration;
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.dao.AbstractPersistenceDataImpl;
 import com.aiyostudio.pokemoninfo.internal.i18n.I18n;
+import com.aiyostudio.pokemoninfo.internal.manager.CacheManager;
 import com.aiyostudio.pokemoninfo.internal.view.PokemonConvertView;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
@@ -57,7 +58,7 @@ public class PokemonInfoApi {
         String uuid = UUID.randomUUID().toString();
 
         NBTItem spriteItem = new NBTItem(PokemonConvertView.getPokemonItem(pokemonObj, false));
-        spriteItem.setString("PokemonDataKey", uuid);
+        spriteItem.setString(CacheManager.getDataKey(), uuid);
 
         PokemonCache pokemonCache = new PokemonCache(uuid, pokemonObj);
         AbstractPersistenceDataImpl.getInstance().addPokemonCache(pokemonCache);

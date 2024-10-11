@@ -2,6 +2,7 @@ package com.aiyostudio.pokemoninfo.internal.config;
 
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.i18n.I18n;
+import com.aiyostudio.pokemoninfo.internal.manager.CacheManager;
 import com.aiyostudio.pokemoninfo.internal.view.PartyView;
 import com.aiyostudio.pokemoninfo.internal.view.PokemonConvertView;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,9 +18,10 @@ public class Configuration {
     public static void init(PokemonInfo plugin) {
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
-
+        // 载入缓存配置
+        CacheManager.setDataKey(plugin.getConfig().getString("data-key", "PokemonDataKey"));
+        // 载入模块配置文件
         CONFIGURATION_MAP.clear();
-
         File moduleFolder = new File(plugin.getDataFolder(), "module");
         if (!moduleFolder.exists()) {
             PokemonInfo.getInstance().saveResource("module/pi.yml", "module/pi.yml");
