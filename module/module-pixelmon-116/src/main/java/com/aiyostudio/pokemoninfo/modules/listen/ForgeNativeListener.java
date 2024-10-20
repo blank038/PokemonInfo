@@ -4,6 +4,8 @@ import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.config.Configuration;
 import com.aiyostudio.pokemoninfo.internal.message.CustomMessage;
 import com.aiyostudio.pokemoninfo.internal.util.TextUtil;
+import com.aystudio.core.pixelmon.api.pokemon.PokemonUtil;
+import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.spawning.archetypes.entities.pokemon.SpawnActionPokemon;
@@ -58,6 +60,33 @@ public class ForgeNativeListener implements Listener {
                         .build();
                 customMessage.broadcast();
             }, 10L);
+        }
+    };
+
+    public static final Consumer<CaptureEvent.SuccessfulCapture> CAPTURE_CONSUMER = (evt) -> {
+        Pokemon pokemon = evt.getPokemon().getPokemon();
+        List<String> species = Configuration.getPIModuleConfig().getStringList("capture.list");
+        if (species.contains(pokemon.getSpecies().getName())) {
+            FileConfiguration configuration = Configuration.getPIModuleConfig();
+            String playerName = evt.getPlayer().getName().getString();
+            String pokemonName = PokemonUtil.getPokemonName(pokemon.getSpecies());
+            List<String> hoverTexts = configuration.getStringList("capture.hover");
+            List<String> stats = new ArrayList<>(), formatStats = PokemonInfo.getModule().formatStats(pokemon, hoverTexts);
+            for (int i = 0; i < formatStats.size(); i++) {
+                if (i + 1 == formatStats.size()) {
+                    stats.add(formatStats.get(i));
+                    break;
+                }
+                stats.add(formatStats.get(i) + "\n");
+            }
+            String message = configuration.getString("capture.text")
+                    .replace("%player%", playerName);
+            CustomMessage customMessage = new CustomMessage.Build()
+                    .setMessage(message)
+                    .setPokemonName(TextUtil.formatHexColor(pokemonName))
+                    .setHolverLines(stats)
+                    .build();
+            customMessage.broadcast();
         }
     };
 
