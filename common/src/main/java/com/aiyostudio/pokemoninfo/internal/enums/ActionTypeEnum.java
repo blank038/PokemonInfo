@@ -12,7 +12,7 @@ import java.util.function.BiConsumer;
  */
 public enum ActionTypeEnum {
     CONVERT((player, slot) -> {
-        if (Configuration.getPokeEggModuleConfig().getBoolean("settings.enable")) {
+        if (Configuration.getConvertModuleConfig().getBoolean("settings.enable")) {
             PokemonConvertView.open(player, slot);
         }
     }),

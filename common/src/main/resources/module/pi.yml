@@ -33,6 +33,7 @@ legendary:
 capture:
   list:
     - "Pikachu"
+    - "legendary,传说宝可梦"
   text: "&b捕捉提醒&f 玩家 &a%player% &f捕捉到了一只 &a%pokemon%"
   hover:
     - "&f"

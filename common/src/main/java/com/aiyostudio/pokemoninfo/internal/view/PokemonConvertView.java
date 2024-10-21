@@ -48,7 +48,7 @@ public class PokemonConvertView {
                         return;
                     }
                     if (!PokemonInfo.getModule().isNullOrEgg(clicker.getUniqueId(), pokemonSlot)) {
-                        FileConfiguration configuration = Configuration.getPokeEggModuleConfig();
+                        FileConfiguration configuration = Configuration.getConvertModuleConfig();
                         Object pokemonObj = PokemonInfo.getModule().getPokemon(clicker.getUniqueId(), pokemonSlot);
                         String species = PokemonInfo.getModule().getSpecies(pokemonObj);
 

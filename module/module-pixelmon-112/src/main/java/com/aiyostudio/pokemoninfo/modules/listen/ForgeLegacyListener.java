@@ -1,11 +1,11 @@
 package com.aiyostudio.pokemoninfo.modules.listen;
 
+import com.aiyostudio.pokemoninfo.api.PokemonInfoApi;
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.config.Configuration;
 import com.aiyostudio.pokemoninfo.internal.message.CustomMessage;
 import com.aiyostudio.pokemoninfo.internal.util.TextUtil;
 import com.aystudio.core.forge.IForgeListenHandler;
-import com.aystudio.core.pixelmon.PokemonAPI;
 import com.aystudio.core.pixelmon.api.pokemon.PokemonUtil;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
@@ -32,9 +32,9 @@ public class ForgeLegacyListener implements Listener {
     public void onForge(Event event) {
         if (event instanceof LegendarySpawnEvent.DoSpawn) {
             LegendarySpawnEvent.DoSpawn e = (LegendarySpawnEvent.DoSpawn) event;
-            if (e.action instanceof SpawnActionPokemon && Configuration.getPIModuleConfig().getBoolean("legendary.enable")) {
+            if (e.action instanceof SpawnActionPokemon && Configuration.getInfoModuleConfig().getBoolean("legendary.enable")) {
                 Bukkit.getScheduler().runTaskLater(PokemonInfo.getInstance(), () -> {
-                    FileConfiguration configuration = Configuration.getPIModuleConfig();
+                    FileConfiguration configuration = Configuration.getInfoModuleConfig();
                     EntityPixelmon entityPixelmon = e.action.getOrCreateEntity();
                     Entity entity = Bukkit.getEntity(entityPixelmon.getUniqueID());
                     Location location = entity.getLocation();
@@ -70,9 +70,9 @@ public class ForgeLegacyListener implements Listener {
         } else if (event instanceof CaptureEvent.SuccessfulCapture) {
             CaptureEvent.SuccessfulCapture evt = (CaptureEvent.SuccessfulCapture) event;
             Pokemon pokemon = evt.getPokemon().getPokemonData();
-            List<String> species = Configuration.getPIModuleConfig().getStringList("capture.list");
+            List<String> species = Configuration.getInfoModuleConfig().getStringList("capture.list");
             if (species.contains(pokemon.getSpecies().name())) {
-                FileConfiguration configuration = Configuration.getPIModuleConfig();
+                FileConfiguration configuration = Configuration.getInfoModuleConfig();
                 String playerName = evt.player.getName();
                 String pokemonName = PokemonUtil.getPokemonName(pokemon.getSpecies());
                 List<String> hoverTexts = configuration.getStringList("capture.hover");
@@ -84,8 +84,16 @@ public class ForgeLegacyListener implements Listener {
                     }
                     stats.add(formatStats.get(i) + "\n");
                 }
+                List<String> flags = new ArrayList<>();
+                if (pokemon.isLegendary()) {
+                    flags.add("legendary");
+                }
+                if (pokemon.getSpecies().isUltraBeast()) {
+                    flags.add("ultrabeast");
+                }
                 String message = configuration.getString("capture.text")
-                        .replace("%player%", playerName);
+                        .replace("%player%", playerName)
+                        .replace("%type%", PokemonInfoApi.findAliasByCaptureList(pokemon.getSpecies().name(), pokemonName, flags));
                 CustomMessage customMessage = new CustomMessage.Build()
                         .setMessage(message)
                         .setPokemonName(TextUtil.formatHexColor(pokemonName))
@@ -97,7 +105,7 @@ public class ForgeLegacyListener implements Listener {
     }
 
     private String getNearbyPlayer(Entity entity, int distance) {
-        String player = Configuration.getPIModuleConfig().getString("legendary.none");
+        String player = Configuration.getInfoModuleConfig().getString("legendary.none");
         for (Player p : entity.getWorld().getPlayers()) {
             if (p.getLocation().distance(entity.getLocation()) <= distance) {
                 player = p.getName();

@@ -42,11 +42,11 @@ public class Configuration {
         return CONFIGURATION_MAP.get(moduleName);
     }
 
-    public static FileConfiguration getPIModuleConfig() {
+    public static FileConfiguration getInfoModuleConfig() {
         return CONFIGURATION_MAP.get("pi");
     }
 
-    public static FileConfiguration getPokeEggModuleConfig() {
+    public static FileConfiguration getConvertModuleConfig() {
         return CONFIGURATION_MAP.get("pokeegg");
     }
 

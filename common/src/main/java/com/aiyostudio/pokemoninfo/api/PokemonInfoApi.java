@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,7 +25,7 @@ public class PokemonInfoApi {
         if (PokemonInfo.getModule().isNullOrEgg(player.getUniqueId(), pokemonSlot)) {
             return false;
         }
-        FileConfiguration configuration = Configuration.getPokeEggModuleConfig();
+        FileConfiguration configuration = Configuration.getConvertModuleConfig();
         Object pokemonObj = PokemonInfo.getModule().getPokemon(player.getUniqueId(), pokemonSlot);
         String species = PokemonInfo.getModule().getSpecies(pokemonObj);
 
@@ -66,5 +67,16 @@ public class PokemonInfoApi {
         player.getInventory().addItem(spriteItem.getItem());
         player.sendMessage(I18n.getStrAndHeader("convert"));
         return true;
+    }
+
+    public static String findAliasByCaptureList(String species, String def, List<String> flags) {
+        return Configuration.getInfoModuleConfig().getStringList("capture.list").stream()
+                .filter((v) -> v.equals(species) || v.startsWith(species + ",") || flags.contains(v))
+                .map((v) -> {
+                    String[] split = species.split(",");
+                    return split.length > 0 ? split[1] : split[0];
+                })
+                .findFirst()
+                .orElse(def);
     }
 }

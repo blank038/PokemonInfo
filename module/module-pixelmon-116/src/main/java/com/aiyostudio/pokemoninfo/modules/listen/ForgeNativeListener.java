@@ -1,5 +1,6 @@
 package com.aiyostudio.pokemoninfo.modules.listen;
 
+import com.aiyostudio.pokemoninfo.api.PokemonInfoApi;
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.config.Configuration;
 import com.aiyostudio.pokemoninfo.internal.message.CustomMessage;
@@ -26,9 +27,9 @@ import java.util.function.Consumer;
  */
 public class ForgeNativeListener implements Listener {
     public static final Consumer<LegendarySpawnEvent.DoSpawn> LEGENDARY_SPAWN_CONSUMER = (e) -> {
-        if (e.action instanceof SpawnActionPokemon && Configuration.getPIModuleConfig().getBoolean("legendary.enable")) {
+        if (e.action instanceof SpawnActionPokemon && Configuration.getInfoModuleConfig().getBoolean("legendary.enable")) {
             Bukkit.getScheduler().runTaskLater(PokemonInfo.getInstance(), () -> {
-                FileConfiguration configuration = Configuration.getPIModuleConfig();
+                FileConfiguration configuration = Configuration.getInfoModuleConfig();
                 PixelmonEntity entityPixelmon = e.action.getOrCreateEntity();
                 Entity entity = Bukkit.getEntity(entityPixelmon.getUUID());
                 Location location = entity.getLocation();
@@ -65,9 +66,9 @@ public class ForgeNativeListener implements Listener {
 
     public static final Consumer<CaptureEvent.SuccessfulCapture> CAPTURE_CONSUMER = (evt) -> {
         Pokemon pokemon = evt.getPokemon().getPokemon();
-        List<String> species = Configuration.getPIModuleConfig().getStringList("capture.list");
+        List<String> species = Configuration.getInfoModuleConfig().getStringList("capture.list");
         if (species.contains(pokemon.getSpecies().getName())) {
-            FileConfiguration configuration = Configuration.getPIModuleConfig();
+            FileConfiguration configuration = Configuration.getInfoModuleConfig();
             String playerName = evt.getPlayer().getName().getString();
             String pokemonName = PokemonUtil.getPokemonName(pokemon.getSpecies());
             List<String> hoverTexts = configuration.getStringList("capture.hover");
@@ -79,8 +80,16 @@ public class ForgeNativeListener implements Listener {
                 }
                 stats.add(formatStats.get(i) + "\n");
             }
+            List<String> flags = new ArrayList<>();
+            if (pokemon.isLegendary()) {
+                flags.add("legendary");
+            }
+            if (pokemon.getSpecies().isUltraBeast()) {
+                flags.add("ultrabeast");
+            }
             String message = configuration.getString("capture.text")
-                    .replace("%player%", playerName);
+                    .replace("%player%", playerName)
+                    .replace("%type%", PokemonInfoApi.findAliasByCaptureList(pokemon.getSpecies().getName(), pokemonName, flags));
             CustomMessage customMessage = new CustomMessage.Build()
                     .setMessage(message)
                     .setPokemonName(TextUtil.formatHexColor(pokemonName))
@@ -91,7 +100,7 @@ public class ForgeNativeListener implements Listener {
     };
 
     private static String getNearbyPlayer(Entity entity, int distance) {
-        String player = Configuration.getPIModuleConfig().getString("legendary.none");
+        String player = Configuration.getInfoModuleConfig().getString("legendary.none");
         for (Player p : entity.getWorld().getPlayers()) {
             if (p.getLocation().distance(entity.getLocation()) <= distance) {
                 player = p.getName();

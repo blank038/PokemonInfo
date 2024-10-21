@@ -36,7 +36,7 @@ public class PlayerListener implements Listener {
             if (nbtItem.hasTag(CacheManager.getDataKey())) {
                 event.setCancelled(true);
                 ActionCooldownManager.setCooldown("action", player.getName(),
-                        Configuration.getPokeEggModuleConfig().getInt("cooldown.action") * 1000L);
+                        Configuration.getConvertModuleConfig().getInt("cooldown.action") * 1000L);
                 String uuid = nbtItem.getString(CacheManager.getDataKey());
                 PokemonCache pokemonCache = AbstractPersistenceDataImpl.getInstance().getPokemonCache(uuid);
                 if (AbstractPersistenceDataImpl.getInstance().removePokemonCache(uuid)) {
