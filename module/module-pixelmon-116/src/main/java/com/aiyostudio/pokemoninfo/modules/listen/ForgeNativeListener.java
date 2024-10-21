@@ -66,8 +66,15 @@ public class ForgeNativeListener implements Listener {
 
     public static final Consumer<CaptureEvent.SuccessfulCapture> CAPTURE_CONSUMER = (evt) -> {
         Pokemon pokemon = evt.getPokemon().getPokemon();
-        List<String> species = Configuration.getInfoModuleConfig().getStringList("capture.list");
-        if (species.contains(pokemon.getSpecies().getName())) {
+        List<String> flags = new ArrayList<>();
+        if (pokemon.isLegendary()) {
+            flags.add("legendary");
+        }
+        if (pokemon.getSpecies().isUltraBeast()) {
+            flags.add("ultrabeast");
+        }
+        String type = PokemonInfoApi.findTypeByCaptureList(pokemon.getSpecies().getName(), flags);
+        if (type != null) {
             FileConfiguration configuration = Configuration.getInfoModuleConfig();
             String playerName = evt.getPlayer().getName().getString();
             String pokemonName = PokemonUtil.getPokemonName(pokemon.getSpecies());
@@ -80,16 +87,9 @@ public class ForgeNativeListener implements Listener {
                 }
                 stats.add(formatStats.get(i) + "\n");
             }
-            List<String> flags = new ArrayList<>();
-            if (pokemon.isLegendary()) {
-                flags.add("legendary");
-            }
-            if (pokemon.getSpecies().isUltraBeast()) {
-                flags.add("ultrabeast");
-            }
             String message = configuration.getString("capture.text")
                     .replace("%player%", playerName)
-                    .replace("%type%", PokemonInfoApi.findTypeByCaptureList(pokemon.getSpecies().getName(), flags));
+                    .replace("%type%", type);
             CustomMessage customMessage = new CustomMessage.Build()
                     .setMessage(message)
                     .setPokemonName(TextUtil.formatHexColor(pokemonName))

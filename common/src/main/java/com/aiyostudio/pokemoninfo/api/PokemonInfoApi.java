@@ -71,12 +71,18 @@ public class PokemonInfoApi {
 
     public static String findTypeByCaptureList(String species, List<String> flags) {
         return Configuration.getInfoModuleConfig().getStringList("capture.list").stream()
-                .filter((v) -> v.equals(species) || v.startsWith(species + ",") || flags.contains(v))
+                .filter((v) -> {
+                    if (v.equals(species)) {
+                        return true;
+                    }
+                    String[] split = v.split(",");
+                    return split[0].startsWith(species) || flags.contains(split[0]);
+                })
                 .map((v) -> {
-                    String[] split = species.split(",");
-                    return split.length > 0 ? split[1] : split[0];
+                    String[] split = v.split(",");
+                    return split.length > 1 ? split[1] : "";
                 })
                 .findFirst()
-                .orElse("");
+                .orElse(null);
     }
 }

@@ -70,8 +70,15 @@ public class ForgeLegacyListener implements Listener {
         } else if (event instanceof CaptureEvent.SuccessfulCapture) {
             CaptureEvent.SuccessfulCapture evt = (CaptureEvent.SuccessfulCapture) event;
             Pokemon pokemon = evt.getPokemon().getPokemonData();
-            List<String> species = Configuration.getInfoModuleConfig().getStringList("capture.list");
-            if (species.contains(pokemon.getSpecies().name())) {
+            List<String> flags = new ArrayList<>();
+            if (pokemon.isLegendary()) {
+                flags.add("legendary");
+            }
+            if (pokemon.getSpecies().isUltraBeast()) {
+                flags.add("ultrabeast");
+            }
+            String type = PokemonInfoApi.findTypeByCaptureList(pokemon.getSpecies().getPokemonName(), flags);
+            if (type != null) {
                 FileConfiguration configuration = Configuration.getInfoModuleConfig();
                 String playerName = evt.player.getName();
                 String pokemonName = PokemonUtil.getPokemonName(pokemon.getSpecies());
@@ -84,16 +91,9 @@ public class ForgeLegacyListener implements Listener {
                     }
                     stats.add(formatStats.get(i) + "\n");
                 }
-                List<String> flags = new ArrayList<>();
-                if (pokemon.isLegendary()) {
-                    flags.add("legendary");
-                }
-                if (pokemon.getSpecies().isUltraBeast()) {
-                    flags.add("ultrabeast");
-                }
                 String message = configuration.getString("capture.text")
                         .replace("%player%", playerName)
-                        .replace("%type%", PokemonInfoApi.findTypeByCaptureList(pokemon.getSpecies().name(), flags));
+                        .replace("%type%", type);
                 CustomMessage customMessage = new CustomMessage.Build()
                         .setMessage(message)
                         .setPokemonName(TextUtil.formatHexColor(pokemonName))
