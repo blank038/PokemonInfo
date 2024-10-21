@@ -69,7 +69,7 @@ public class PokemonInfoApi {
         return true;
     }
 
-    public static String findAliasByCaptureList(String species, String def, List<String> flags) {
+    public static String findTypeByCaptureList(String species, List<String> flags) {
         return Configuration.getInfoModuleConfig().getStringList("capture.list").stream()
                 .filter((v) -> v.equals(species) || v.startsWith(species + ",") || flags.contains(v))
                 .map((v) -> {
@@ -77,6 +77,6 @@ public class PokemonInfoApi {
                     return split.length > 0 ? split[1] : split[0];
                 })
                 .findFirst()
-                .orElse(def);
+                .orElse("");
     }
 }

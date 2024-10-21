@@ -93,7 +93,7 @@ public class ForgeLegacyListener implements Listener {
                 }
                 String message = configuration.getString("capture.text")
                         .replace("%player%", playerName)
-                        .replace("%type%", PokemonInfoApi.findAliasByCaptureList(pokemon.getSpecies().name(), pokemonName, flags));
+                        .replace("%type%", PokemonInfoApi.findTypeByCaptureList(pokemon.getSpecies().name(), flags));
                 CustomMessage customMessage = new CustomMessage.Build()
                         .setMessage(message)
                         .setPokemonName(TextUtil.formatHexColor(pokemonName))
