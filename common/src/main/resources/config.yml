@@ -22,3 +22,8 @@ convert-option:
     url: jdbc:sqlite:./plugins/PokemonInfo/database.db
 # 相片 NBT 键名设定
 data-key: "PokemonDataKey"
+# 自定义格式, 一些特殊数值可自定义格式
+custom-format:
+  ivs:
+    # 金银王冠使用后个体值颜色
+    hyper-trained: "&c%value%"

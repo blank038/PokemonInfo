@@ -1,6 +1,7 @@
 package com.aiyostudio.pokemoninfo.modules;
 
 import com.aiyostudio.pokemoninfo.internal.cache.PokemonCache;
+import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.debug.DebugControl;
 import com.aiyostudio.pokemoninfo.internal.interfaces.IModule;
 import com.aiyostudio.pokemoninfo.internal.view.PartyView;
@@ -137,7 +138,7 @@ public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
         if (pokemon == null) {
             return stats;
         }
-        String state = PartyView.getData().getString("custom-format.ivs.hyper-trained");
+        String state = PokemonInfo.getInstance().getConfig().getString("custom-format.ivs.hyper-trained");
         if (state == null) {
             return stats;
         }

@@ -159,7 +159,7 @@ public class PartyView {
                 .replace("%pokemon_name%", PokemonInfo.getModule().getPokemonTranslationName(pokemon));
         String message = options.getString("message").replace("%player%", player.getName());
         String[] split = TextUtil.formatHexColor(message).split("%pokemon%");
-        List<String> stats = new ArrayList<>(), formatStats = PokemonInfo.getModule().formatStats(pokemon, options.getStringList("description"));
+        List<String> stats = new ArrayList<>(), formatStats = PokemonInfo.getModule().internalFormat(pokemon, options.getStringList("description"));
         for (int i = 0; i < formatStats.size(); i++) {
             if (i + 1 == formatStats.size()) {
                 stats.add(formatStats.get(i));

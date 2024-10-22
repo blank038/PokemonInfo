@@ -8,6 +8,7 @@ import com.aystudio.core.bukkit.util.common.CommonUtil;
 import com.aystudio.core.bukkit.util.inventory.GuiModel;
 import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.utils.MinecraftVersion;
+import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -52,6 +53,7 @@ public class PokemonConvertView {
         }
     };
     @Setter
+    @Getter
     private static FileConfiguration data;
 
 
@@ -119,7 +121,7 @@ public class PokemonConvertView {
         meta.setDisplayName(TextUtil.formatHexColor(section.getString("name"))
                 .replace("%pokemon_name%", PokemonInfo.getModule().getPokemonTranslationName(pokemon))
                 .replace("%shiny%", I18n.getOption("shiny." + (PokemonInfo.getModule().isShiny(pokemon) ? "t" : "f"))));
-        List<String> lore = PokemonInfo.getModule().formatStats(pokemon, new ArrayList<>(section.getStringList(display ? "display-lore" : "sprite-lore")));
+        List<String> lore = PokemonInfo.getModule().internalFormat(pokemon, new ArrayList<>(section.getStringList(display ? "display-lore" : "sprite-lore")));
         lore.replaceAll(TextUtil::formatHexColor);
         meta.setLore(lore);
         itemStack.setItemMeta(meta);
