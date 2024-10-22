@@ -34,10 +34,15 @@ public class PokeEggCommand implements CommandExecutor {
             if (slot < 1 || slot > 6) {
                 return;
             }
-            if (PokemonInfoApi.convertByDefault((Player) sender, --slot)) {
-                sender.sendMessage(I18n.getStrAndHeader("convert"));
+            Player player = (Player) sender;
+            if (player.getInventory().firstEmpty() == -1) {
+                player.sendMessage(I18n.getStrAndHeader("inventory-full"));
+                return;
+            }
+            if (PokemonInfoApi.convertByDefault(player, --slot)) {
+                player.sendMessage(I18n.getStrAndHeader("convert"));
             } else {
-                sender.sendMessage(I18n.getStrAndHeader("denied"));
+                player.sendMessage(I18n.getStrAndHeader("denied"));
             }
         } catch (Exception ignored) {
             sender.sendMessage(I18n.getStrAndHeader("wrong-number"));

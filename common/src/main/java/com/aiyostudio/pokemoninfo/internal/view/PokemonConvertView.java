@@ -1,19 +1,14 @@
 package com.aiyostudio.pokemoninfo.internal.view;
 
+import com.aiyostudio.pokemoninfo.api.PokemonInfoApi;
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
-import com.aiyostudio.pokemoninfo.api.event.PlayerConvertPokemonEvent;
-import com.aiyostudio.pokemoninfo.internal.cache.PokemonCache;
-import com.aiyostudio.pokemoninfo.internal.config.Configuration;
-import com.aiyostudio.pokemoninfo.internal.dao.AbstractPersistenceDataImpl;
 import com.aiyostudio.pokemoninfo.internal.i18n.I18n;
-import com.aiyostudio.pokemoninfo.internal.manager.CacheManager;
 import com.aiyostudio.pokemoninfo.internal.util.TextUtil;
 import com.aystudio.core.bukkit.util.common.CommonUtil;
 import com.aystudio.core.bukkit.util.inventory.GuiModel;
 import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.utils.MinecraftVersion;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,7 +21,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Blank038
@@ -47,49 +41,11 @@ public class PokemonConvertView {
                         clicker.sendMessage(I18n.getStrAndHeader("last-pokemon"));
                         return;
                     }
-                    if (!PokemonInfo.getModule().isNullOrEgg(clicker.getUniqueId(), pokemonSlot)) {
-                        FileConfiguration configuration = Configuration.getConvertModuleConfig();
-                        Object pokemonObj = PokemonInfo.getModule().getPokemon(clicker.getUniqueId(), pokemonSlot);
-                        String species = PokemonInfo.getModule().getSpecies(pokemonObj);
-
-                        if (configuration.getStringList("black-list").contains(species)) {
-                            clicker.sendMessage(I18n.getStrAndHeader("black-list"));
-                            return;
-                        }
-                        if (PokemonInfo.getModule().getIVStoreValue(pokemonObj) > configuration.getInt("settings.maximum-ivs")) {
-                            clicker.sendMessage(I18n.getStrAndHeader("maximum-ivs"));
-                            return;
-                        }
-                        if (!configuration.getBoolean("settings.color") && PokemonInfo.getModule().getPokemonCustomName(pokemonObj).contains("§")) {
-                            clicker.sendMessage(I18n.getStrAndHeader("color"));
-                            return;
-                        }
-                        if (PokemonInfo.getModule().hasFlags(pokemonObj, configuration.getStringList("settings.flags").toArray(new String[0]))
-                                || PokemonInfo.getModule().isCancelled(pokemonObj)) {
-                            clicker.sendMessage(I18n.getStrAndHeader("denied"));
-                            return;
-                        }
-                        PlayerConvertPokemonEvent event = new PlayerConvertPokemonEvent(clicker, pokemonObj);
-                        Bukkit.getPluginManager().callEvent(event);
-                        if (event.isCancelled()) {
-                            if (event.isNotify()) {
-                                clicker.sendMessage(I18n.getStrAndHeader("denied"));
-                            }
-                            return;
-                        }
-                        PokemonInfo.getModule().retrieveAll(clicker.getUniqueId());
-                        PokemonInfo.getModule().setPartyPokemon(clicker.getUniqueId(), pokemonSlot, null);
-                        String uuid = UUID.randomUUID().toString();
-
-                        NBTItem spriteItem = new NBTItem(PokemonConvertView.getPokemonItem(pokemonObj , false));
-                        spriteItem.setString(CacheManager.getDataKey(), uuid);
-
-                        PokemonCache pokemonCache = new PokemonCache(uuid, pokemonObj);
-                        AbstractPersistenceDataImpl.getInstance().addPokemonCache(pokemonCache);
-
-                        clicker.getInventory().addItem(spriteItem.getItem());
-                        clicker.sendMessage(I18n.getStrAndHeader("convert"));
+                    if (clicker.getInventory().firstEmpty() == -1) {
+                        clicker.sendMessage(I18n.getStrAndHeader("inventory-full"));
+                        return;
                     }
+                    PokemonInfoApi.convertByDefault(clicker, pokemonSlot);
                 }
                 PartyView.open(clicker);
             }
