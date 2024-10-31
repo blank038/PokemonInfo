@@ -6,7 +6,7 @@ plugins {
 }
 
 project.ext {
-    ver = "1.14.7"
+    ver = "1.15.0"
 }
 
 dependencies {
