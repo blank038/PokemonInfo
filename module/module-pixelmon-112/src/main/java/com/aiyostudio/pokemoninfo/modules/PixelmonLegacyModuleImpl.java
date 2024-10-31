@@ -4,7 +4,7 @@ import com.aiyostudio.pokemoninfo.internal.cache.PokemonCache;
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.debug.DebugControl;
 import com.aiyostudio.pokemoninfo.internal.interfaces.IModule;
-import com.aiyostudio.pokemoninfo.internal.view.PartyView;
+import com.aiyostudio.pokemoninfo.internal.util.TextUtil;
 import com.aystudio.core.bukkit.AyCore;
 import com.aystudio.core.pixelmon.PokemonAPI;
 import com.aystudio.core.pixelmon.api.pokemon.PokemonUtil;
@@ -22,6 +22,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
 
 /**
  * @author Blank038
@@ -145,13 +146,19 @@ public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
         List<String> result = new ArrayList<>(stats);
         result.replaceAll((line) -> {
             String replacement = line;
-            for (StatsType statsType : StatsType.getStatValues()) {
-                String target = "%IVS_" + statsType.name() + "%";
-                if (!line.contains(target)) {
+            Matcher matcher = TextUtil.IVS_PATTERN.matcher(line);
+            while (matcher.find()) {
+                String group = matcher.group(), type = group.replace("%", "").split("_")[1];
+                StatsType statsType = null;
+                try {
+                    statsType = StatsType.valueOf(type);
+                } catch (Exception ignored) {
+                }
+                if (statsType == null) {
                     continue;
                 }
                 if (pokemon.getIVs().isHyperTrained(statsType)) {
-                    replacement = replacement.replace(target, state.replace("%value%", target));
+                    replacement = replacement.replace(group, state.replace("%value%", group));
                 }
             }
             return replacement;

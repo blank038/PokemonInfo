@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
  */
 public class TextUtil {
     private static final Pattern PATTERN = Pattern.compile("#[A-f0-9]{6}");
+    public static final Pattern IVS_PATTERN = Pattern.compile("%IVS_[a-zA-Z]+%");
 
     public static String formatHexColor(String message) {
         String copy = message;

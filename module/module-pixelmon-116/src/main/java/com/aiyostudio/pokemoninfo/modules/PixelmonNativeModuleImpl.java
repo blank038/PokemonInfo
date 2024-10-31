@@ -4,7 +4,7 @@ import com.aiyostudio.pokemoninfo.internal.cache.PokemonCache;
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.debug.DebugControl;
 import com.aiyostudio.pokemoninfo.internal.interfaces.IModule;
-import com.aiyostudio.pokemoninfo.internal.view.PartyView;
+import com.aiyostudio.pokemoninfo.internal.util.TextUtil;
 import com.aystudio.core.bukkit.AyCore;
 import com.aystudio.core.pixelmon.api.pokemon.PokemonUtil;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
 
 /**
  * @author Blank038
@@ -149,19 +150,21 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
         battleStatsTypeMap.put("HP", BattleStatsType.HP);
         battleStatsTypeMap.put("Speed", BattleStatsType.SPEED);
         battleStatsTypeMap.put("Attack", BattleStatsType.ATTACK);
-        battleStatsTypeMap.put("Defense", BattleStatsType.DEFENSE);
+        battleStatsTypeMap.put("Defence", BattleStatsType.DEFENSE);
         battleStatsTypeMap.put("SpecialAttack", BattleStatsType.SPECIAL_ATTACK);
-        battleStatsTypeMap.put("SpecialDefense", BattleStatsType.SPECIAL_DEFENSE);
+        battleStatsTypeMap.put("SpecialDefence", BattleStatsType.SPECIAL_DEFENSE);
         List<String> result = new ArrayList<>(stats);
         result.replaceAll((line) -> {
             String replacement = line;
-            for (Map.Entry<String, BattleStatsType> entry : battleStatsTypeMap.entrySet()) {
-                String target = "%IVS_" + entry.getKey() + "%";
-                if (!line.contains(target)) {
+            Matcher matcher = TextUtil.IVS_PATTERN.matcher(line);
+            while (matcher.find()) {
+                String group = matcher.group(), type = group.replace("%", "").split("_")[1];
+                BattleStatsType battleStatsType = battleStatsTypeMap.get(type);
+                if (battleStatsType == null) {
                     continue;
                 }
-                if (pokemon.getIVs().isHyperTrained(entry.getValue())) {
-                    replacement = replacement.replace(target, state.replace("%value%", target));
+                if (pokemon.getIVs().isHyperTrained(battleStatsType)) {
+                    replacement = replacement.replace(group, state.replace("%value%", group));
                 }
             }
             return replacement;
