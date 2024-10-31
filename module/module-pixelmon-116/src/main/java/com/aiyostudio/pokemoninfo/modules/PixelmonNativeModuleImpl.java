@@ -16,6 +16,7 @@ import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.JsonToNBT;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.DataInputStream;
@@ -146,6 +147,8 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
         if (state == null) {
             return stats;
         }
+        boolean combatpower = Bukkit.getPluginManager().getPlugin("CombatPower") != null;
+        boolean pokeStar = Bukkit.getPluginManager().getPlugin("PokeStar") != null;
         Map<String, BattleStatsType> battleStatsTypeMap = new HashMap<>();
         battleStatsTypeMap.put("HP", BattleStatsType.HP);
         battleStatsTypeMap.put("Speed", BattleStatsType.SPEED);
@@ -166,6 +169,15 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
                 if (pokemon.getIVs().isHyperTrained(battleStatsType)) {
                     replacement = replacement.replace(group, state.replace("%value%", group));
                 }
+            }
+            if (combatpower) {
+                com.mc9y.combatpower.api.CombatPowerAPI cpa = com.mc9y.combatpower.Main.getCombatPowerAPI();
+                replacement = replacement.replace("%combat_power%", String.valueOf(cpa.getPokemonCombatPower(pokemon)));
+            }
+            if (pokeStar) {
+                com.mc9y.pokestar.PokeStarAPI psa = com.mc9y.pokestar.Main.getPokeStarAPI();
+                int star = psa.getPokemonStar(pokemon.getSpecies().getName());
+                replacement = replacement.replace("%star%", psa.getPokeShowName(star));
             }
             return replacement;
         });

@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
@@ -143,6 +144,8 @@ public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
         if (state == null) {
             return stats;
         }
+        boolean combatpower = Bukkit.getPluginManager().getPlugin("CombatPower") != null;
+        boolean pokeStar = Bukkit.getPluginManager().getPlugin("PokeStar") != null;
         List<String> result = new ArrayList<>(stats);
         result.replaceAll((line) -> {
             String replacement = line;
@@ -160,6 +163,15 @@ public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
                 if (pokemon.getIVs().isHyperTrained(statsType)) {
                     replacement = replacement.replace(group, state.replace("%value%", group));
                 }
+            }
+            if (combatpower) {
+                com.mc9y.combatpower.api.CombatPowerAPI cpa = com.mc9y.combatpower.Main.getCombatPowerAPI();
+                replacement = replacement.replace("%combat_power%", String.valueOf(cpa.getPokemonCombatPower(pokemon)));
+            }
+            if (pokeStar) {
+                com.mc9y.pokestar.PokeStarAPI psa = com.mc9y.pokestar.Main.getPokeStarAPI();
+                int star = psa.getPokemonStar(pokemon.getSpecies().name());
+                replacement = replacement.replace("%star%", psa.getPokeShowName(star));
             }
             return replacement;
         });
