@@ -57,8 +57,7 @@ public class PokemonInfo extends AyPlugin {
                 BooleanSupplier supplier = (BooleanSupplier) aClass.newInstance();
                 supplier.getAsBoolean();
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                DebugControl.debug(Level.SEVERE, e.toString());
-                e.printStackTrace();
+                DebugControl.debug(Level.SEVERE, e, "Failed to load module.");
             }
         }
     }

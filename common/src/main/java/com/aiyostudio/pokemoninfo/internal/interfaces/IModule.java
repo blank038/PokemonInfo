@@ -17,7 +17,7 @@ public interface IModule<T> {
 
     boolean writePokemonToFile(PokemonCache pokemonCache, File file);
 
-    boolean isNullOrEgg(UUID uuid, int pokemonSlot);
+    boolean isNull(UUID uuid, int pokemonSlot, boolean egg);
 
     boolean isShiny(T pokemon);
 

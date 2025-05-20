@@ -22,7 +22,7 @@ import java.util.UUID;
 public class PokemonInfoApi {
 
     public static boolean convertByDefault(Player player, int pokemonSlot) {
-        if (PokemonInfo.getModule().isNullOrEgg(player.getUniqueId(), pokemonSlot)) {
+        if (PokemonInfo.getModule().isNull(player.getUniqueId(), pokemonSlot, false)) {
             return false;
         }
         FileConfiguration configuration = Configuration.getConvertModuleConfig();

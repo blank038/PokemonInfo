@@ -1,6 +1,8 @@
 package com.aiyostudio.pokemoninfo.modules;
 
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
+import com.aystudio.core.pixelmon.PokemonAPI;
+import com.aystudio.core.pixelmon.api.enums.PixelmonVersionEnum;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.events.spawning.LegendarySpawnEvent;
@@ -21,7 +23,7 @@ public class PixelmonNativeModuleChecker implements BooleanSupplier {
 
     @Override
     public boolean getAsBoolean() {
-        if (Pixelmon.getVersion().startsWith("9.1")) {
+        if (PokemonAPI.getInstance().getPixelmonVersion() == PixelmonVersionEnum.v1_16_R3) {
             PokemonInfo.setModule(new PixelmonNativeModuleImpl());
             Map<Class<Event>, Consumer<Event>> events = new HashMap() {
                 {

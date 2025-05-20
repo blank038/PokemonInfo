@@ -42,6 +42,10 @@ actions:
   LEFT: CONVERT
   RIGHT: SHOW
 
+settings:
+  # 是否显示精灵蛋的信息
+  egg-info: false
+
 show-setting:
   cooldown: 10
   message: "&6精灵展示 &f玩家 &a%player% &f展示了一只精灵 &f%pokemon%"

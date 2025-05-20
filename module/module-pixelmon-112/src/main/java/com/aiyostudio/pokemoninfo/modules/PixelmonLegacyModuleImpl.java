@@ -76,13 +76,19 @@ public class PixelmonLegacyModuleImpl implements IModule<Pokemon> {
     }
 
     @Override
-    public boolean isNullOrEgg(UUID uuid, int pokemonSlot) {
+    public boolean isNull(UUID uuid, int pokemonSlot, boolean egg) {
         PlayerPartyStorage storage = Pixelmon.storageManager.getParty(uuid);
         if (storage == null || pokemonSlot < 0 || pokemonSlot >= 6) {
             return true;
         }
         Pokemon pokemon = storage.get(pokemonSlot);
-        return pokemon == null || pokemon.isEgg();
+        if (pokemon == null) {
+            return true;
+        }
+        if (egg && pokemon.isEgg()) {
+            return false;
+        }
+        return pokemon.isEgg();
     }
 
     @Override

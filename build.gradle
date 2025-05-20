@@ -2,12 +2,9 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '4.0.2'
 }
 
-project.ext {
-    ver = "1.15.0"
-}
+version = "1.16.0"
 
 dependencies {
     implementation project(":common")
@@ -19,7 +16,7 @@ allprojects {
     apply plugin: 'java'
 
     archivesBaseName = "PokemonInfo"
-    version = ""
+    version = rootProject.version
 
     sourceCompatibility = targetCompatibility = '1.8'
     compileJava {
@@ -28,11 +25,12 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven { url = "https://files.minecraftforge.net/maven" }
         maven {
             name = "AyStudio-Repository"
             url = "https://repo.mc9y.com/snapshots"
         }
+        maven { url = "https://files.minecraftforge.net/maven" }
+
     }
 
     dependencies {
@@ -43,7 +41,7 @@ allprojects {
     processResources {
         from(sourceSets.main.resources.srcDirs) {
             include '**/*.yml'
-            filter ReplaceTokens, tokens: ["version": project.property("ver")]
+            filter ReplaceTokens, tokens: ["version": version]
             duplicatesStrategy DuplicatesStrategy.INCLUDE
         }
     }
@@ -62,7 +60,7 @@ subprojects.each { subproject -> evaluationDependsOn(subproject.path) }
 
 tasks.register('allJar', Jar) {
     dependsOn subprojects.tasks["build"]
-    baseName = 'PokemonInfo-' + project.property("ver")
+    archivesBaseName = "PokemonInfo"
     subprojects.each { subproject ->
         from subproject.configurations.archives.allArtifacts.files.collect {
             zipTree(it)

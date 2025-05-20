@@ -18,9 +18,9 @@ public class DebugControl {
         PokemonInfo.getInstance().getLogger().log(level, message);
     }
 
-    public static void debug(Level level, String message) {
+    public static void debug(Level level, Throwable throwable, String message) {
         if (debug) {
-            PokemonInfo.getInstance().getLogger().log(level, message);
+            PokemonInfo.getInstance().getLogger().log(level, throwable, () -> message);
         }
     }
 }

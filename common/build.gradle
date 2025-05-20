@@ -1,24 +1,11 @@
-plugins {
-    id 'com.github.johnrengelman.shadow'
-}
-
 dependencies {
-    implementation("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
-    implementation("org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT")
-    implementation("org.bukkit:bukkit:1.16.5-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT")
+    compileOnly("org.bukkit:bukkit:1.16.5-R0.1-SNAPSHOT")
 
-    implementation "com.aystudio.core:AyCore:1.2.0-BETA"
+    compileOnly("com.aystudio.core:AyCore:1.3.1-BETA")
     // NBTItem
-    implementation("de.tr7zw:item-nbt-api-plugin:2.11.2")
+    compileOnly("de.tr7zw:item-nbt-api-plugin:2.11.2")
     // PlaceholderAPI
-    implementation('me.clip:placeholderapi:2.10.4')
+    compileOnly('me.clip:placeholderapi:2.10.4')
 }
-
-shadowJar {
-    setArchiveName("Bingo.jar")
-
-    dependencies {
-    }
-}
-
-tasks.build.dependsOn(tasks.shadowJar)

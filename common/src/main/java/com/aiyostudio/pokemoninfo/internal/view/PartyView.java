@@ -69,7 +69,7 @@ public class PartyView {
             if (pokemonSlot < 0 || pokemonSlot >= 6) {
                 return;
             }
-            if (PokemonInfo.getModule().isNullOrEgg(clicker.getUniqueId(), pokemonSlot)) {
+            if (PokemonInfo.getModule().isNull(clicker.getUniqueId(), pokemonSlot, false)) {
                 return;
             }
             if (data.contains("actions." + e.getClick().name())) {
@@ -112,7 +112,7 @@ public class PartyView {
     }
 
     private static ItemStack getPokemonItem(Player player, int pokemonSlot, FileConfiguration data) {
-        boolean isNullOrEgg = PokemonInfo.getModule().isNullOrEgg(player.getUniqueId(), pokemonSlot);
+        boolean isNullOrEgg = PokemonInfo.getModule().isNull(player.getUniqueId(), pokemonSlot, data.getBoolean("settings.egg-info"));
         Object pokemon = PokemonInfo.getModule().getPokemon(player.getUniqueId(), pokemonSlot);
 
         ConfigurationSection section = data.getConfigurationSection("pokemon-item." + (isNullOrEgg ? "empty" : "default"));
@@ -149,7 +149,7 @@ public class PartyView {
             player.sendMessage(I18n.getStrAndHeader("cooldown"));
             return;
         }
-        if (PokemonInfo.getModule().isNullOrEgg(player.getUniqueId(), pokemonSlot)) {
+        if (PokemonInfo.getModule().isNull(player.getUniqueId(), pokemonSlot, false)) {
             player.sendMessage(I18n.getStrAndHeader("wrong-pokemon"));
             return;
         }

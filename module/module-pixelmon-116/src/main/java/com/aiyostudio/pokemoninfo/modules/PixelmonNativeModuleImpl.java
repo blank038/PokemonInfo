@@ -5,7 +5,7 @@ import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.debug.DebugControl;
 import com.aiyostudio.pokemoninfo.internal.interfaces.IModule;
 import com.aiyostudio.pokemoninfo.internal.util.TextUtil;
-import com.aystudio.core.bukkit.AyCore;
+import com.aystudio.core.pixelmon.PokemonAPI;
 import com.aystudio.core.pixelmon.api.pokemon.PokemonUtil;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -79,13 +79,19 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
     }
 
     @Override
-    public boolean isNullOrEgg(UUID uuid, int pokemonSlot) {
+    public boolean isNull(UUID uuid, int pokemonSlot, boolean egg) {
         PlayerPartyStorage storage = StorageProxy.getParty(uuid);
         if (storage == null || pokemonSlot < 0 || pokemonSlot >= 6) {
             return true;
         }
         Pokemon pokemon = storage.get(pokemonSlot);
-        return pokemon == null || pokemon.isEgg();
+        if (pokemon == null) {
+            return true;
+        }
+        if (egg && pokemon.isEgg()) {
+            return false;
+        }
+        return pokemon.isEgg();
     }
 
     @Override
@@ -135,7 +141,7 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
         if (pokemonObj == null) {
             return stats;
         }
-        return AyCore.getPokemonAPI().getStatsHelper().format(pokemonObj, stats);
+        return PokemonAPI.getInstance().getStatsHelper().format(pokemonObj, stats);
     }
 
     @Override
@@ -189,7 +195,7 @@ public class PixelmonNativeModuleImpl implements IModule<Pokemon> {
         if (pokemonObj == null) {
             return null;
         }
-        return AyCore.getPokemonAPI().getSpriteHelper().getSpriteItem(pokemonObj);
+        return PokemonAPI.getInstance().getSpriteHelper().getSpriteItem(pokemonObj);
     }
 
     @Override

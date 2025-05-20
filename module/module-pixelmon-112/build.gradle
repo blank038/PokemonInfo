@@ -3,7 +3,7 @@ buildscript {
         maven { url = "https://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:6.+'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -16,10 +16,10 @@ dependencies {
     implementation("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
     implementation("org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT")
     implementation("org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT")
+    implementation("com.aystudio.core:AyCore:1.3.1-BETA")
+    implementation("com.aystudio.core:AyCore-Pixelmon:1.12.2-R0.1")
 
-    implementation "com.aystudio.core:AyCore:1.2.0-BETA"
-
-    implementation fileTree(dir: './libs', includes: ['*.jar'])
+    compileOnly(fileTree(dir: './libs', includes: ['*.jar']))
 }
 
 minecraft {
