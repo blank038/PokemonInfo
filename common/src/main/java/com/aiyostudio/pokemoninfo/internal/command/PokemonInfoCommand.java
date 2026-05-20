@@ -3,6 +3,7 @@ package com.aiyostudio.pokemoninfo.internal.command;
 import com.aiyostudio.pokemoninfo.internal.cache.PlayerData;
 import com.aiyostudio.pokemoninfo.internal.core.PokemonInfo;
 import com.aiyostudio.pokemoninfo.internal.config.Configuration;
+import com.aiyostudio.pokemoninfo.internal.enums.ActionTypeEnum;
 import com.aiyostudio.pokemoninfo.internal.handler.convert.ConverHandler;
 import com.aiyostudio.pokemoninfo.internal.i18n.I18n;
 import com.aiyostudio.pokemoninfo.internal.manager.CacheManager;
@@ -36,10 +37,32 @@ public class PokemonInfoCommand implements CommandExecutor {
             case "import":
                 this.importData(sender, args);
                 break;
+            case "show":
+                this.showPokemon(sender, args);
+                break;
             default:
                 break;
         }
         return false;
+    }
+
+    private void showPokemon(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            return;
+        }
+        if (args.length == 1) {
+            sender.sendMessage(I18n.getStrAndHeader("pls-enter-slot"));
+            return;
+        }
+        try {
+            int slot = Integer.parseInt(args[1]);
+            if (slot < 1 || slot > 6) {
+                return;
+            }
+            ActionTypeEnum.SHOW.run((Player) sender, slot - 1);
+        } catch (NumberFormatException ignored) {
+            sender.sendMessage(I18n.getStrAndHeader("wrong-number"));
+        }
     }
 
     private void reloadConfig(CommandSender sender) {
